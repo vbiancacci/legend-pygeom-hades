@@ -1,0 +1,447 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+	<define>
+		<constant name="TWOPI" value="2.*pi"/>
+		<quantity name="well_radius" value="4.0" type="length" unit="mm"/>
+		<quantity name="detector_radius" value="39.8" type="length" unit="mm"/>
+		<quantity name="groove_outer_radius" value="15.0" type="length" unit="mm"/>
+		<quantity name="groove_inner_radius" value="12.0" type="length" unit="mm"/>
+		<quantity name="detector_height" value="70.3" type="lenght" unit="mm"/>
+		<quantity name="groove_height" value="68.3" type="length" unit="mm"/>
+		<quantity name="well_height" value="37.0" type="length" unit="mm"/>
+		<constant name="TWOPI_1" value="2.*pi"/>
+		<quantity name="wrap_top_thickness" value="1.0" type="length" unit="mm"/>
+		<quantity name="wrap_z" value="82.0" type="length" unit="mm"/>
+		<quantity name="wrap_cavity_radius" value="40.5" type="length" unit="mm"/>
+		<quantity name="wrap_radius" value="41.2" type="length" unit="mm"/>
+		<constant name="TWOPI_2" value="2.*pi"/>
+		<quantity name="edge_height" value="1.3" type="length" unit="mm"/>
+		<quantity name="pos_top_ring_z" value="14.0" type="lenght" unit="mm"/>
+		<quantity name="end_top_ring_z" value="22.6" type="lenght" unit="mm"/>
+		<quantity name="pos_bottom_ring_z" value="51.4" type="lenght" unit="mm"/>
+		<quantity name="end_bottom_ring_z" value="60.0" type="lenght" unit="mm"/>
+		<quantity name="inner_height" value="92.0" type="length" unit="mm"/>
+		<quantity name="outer_height" value="95.1" type="length" unit="mm"/>
+		<quantity name="end_bottom_cyl_inner_z" value="111.0" type="lenght" unit="mm"/>
+		<quantity name="end_bottom_cyl_outer_z" value="120.5" type="lenght" unit="mm"/>
+		<quantity name="inner_radius" value="41.5" type="length" unit="mm"/>
+		<quantity name="bottom_cyl_inner_radius" value="8.0" type="length" unit="mm"/>
+		<quantity name="max_radius" value="44.5" type="lenght" unit="mm"/>
+		<quantity name="outer_radius" value="42.3" type="length" unit="mm"/>
+		<quantity name="bottom_cyl_outer_radius" value="13.0" type="length" unit="mm"/>
+		<constant name="bottom_plate_width" value="750"/>
+		<quantity name="bottom_plate_x" value="bottom_plate_width" type="length" unit="mm"/>
+		<constant name="bottom_plate_depth" value="750"/>
+		<quantity name="bottom_plate_y" value="bottom_plate_depth" type="length" unit="mm"/>
+		<constant name="bottom_plate_height" value="15"/>
+		<quantity name="bottom_plate_z" value="bottom_plate_height" type="length" unit="mm"/>
+		<constant name="cavity_bottom_plate_width" value="120"/>
+		<quantity name="cavity_bottom_plate_x" value="cavity_bottom_plate_width" type="length" unit="mm"/>
+		<constant name="cavity_bottom_plate_depth" value="940"/>
+		<quantity name="cavity_bottom_plate_y" value="cavity_bottom_plate_depth" type="length" unit="mm"/>
+		<constant name="cavity_bottom_plate_height" value="20"/>
+		<quantity name="cavity_bottom_plate_z" value="cavity_bottom_plate_height" type="length" unit="mm"/>
+		<position name="pos_cavity_bottom_plate" x="0.0" y="(bottom_plate_y)/2" z="0.0" unit="mm"/>
+		<constant name="base_width_1" value="480"/>
+		<quantity name="base_x_1" value="base_width_1" type="length" unit="mm"/>
+		<constant name="base_depth_1" value="450"/>
+		<quantity name="base_y_1" value="base_depth_1" type="length" unit="mm"/>
+		<constant name="base_height_1" value="500"/>
+		<quantity name="base_z_1" value="base_height_1" type="length" unit="mm"/>
+		<constant name="inner_cavity_width_1" value="300"/>
+		<quantity name="inner_cavity_x_1" value="inner_cavity_width_1" type="length" unit="mm"/>
+		<constant name="inner_cavity_depth_1" value="250"/>
+		<quantity name="inner_cavity_y_1" value="inner_cavity_depth_1" type="length" unit="mm"/>
+		<constant name="inner_cavity_height_1" value="500"/>
+		<quantity name="inner_cavity_z_1" value="inner_cavity_height_1" type="length" unit="mm"/>
+		<constant name="cavity_width_1" value="120"/>
+		<quantity name="cavity_x_1" value="cavity_width_1" type="length" unit="mm"/>
+		<constant name="cavity_depth_1" value="100"/>
+		<quantity name="cavity_y_1" value="cavity_depth_1" type="length" unit="mm"/>
+		<constant name="cavity_height_1" value="400"/>
+		<quantity name="cavity_z_1" value="cavity_height_1" type="length" unit="mm"/>
+		<position name="pos_cavity_base_1" x="0.0" y="(inner_cavity_y_1/2+(base_y_1-inner_cavity_y_1)/4)" z="(inner_cavity_z_1-cavity_z_1)/2" unit="mm"/>
+		<position name="center" x="0" y="0" z="0" unit="mm"/>
+		<constant name="top_width_1" value="300"/>
+		<quantity name="top_x_1" value="top_width_1" type="length" unit="mm"/>
+		<constant name="top_depth_1" value="300"/>
+		<quantity name="top_y_1" value="top_depth_1" type="length" unit="mm"/>
+		<constant name="top_height_1" value="90"/>
+		<quantity name="top_z_1" value="top_height_1" type="length" unit="mm"/>
+		<position name="pos_top_1" x="0.0" y="0.0" z="-(base_z_1+top_z_1)/2" unit="mm"/>
+		<constant name="front_width_1" value="160"/>
+		<quantity name="front_x_1" value="front_width_1" type="length" unit="mm"/>
+		<constant name="front_depth_1" value="100"/>
+		<quantity name="front_y_1" value="front_depth_1" type="length" unit="mm"/>
+		<constant name="front_height_1" value="400"/>
+		<quantity name="front_z_1" value="front_height_1" type="length" unit="mm"/>
+		<position name="pos_front_1" x="0.0" y="(base_y_1+front_y_1)/2" z="(base_z_1-front_z_1)/2" unit="mm"/>
+		<constant name="source_width" value="5"/>
+		<quantity name="source_radius" value="source_width/2" type="length" unit="mm"/>
+		<constant name="source_height" value="0.1"/>
+		<quantity name="source_z" value="source_height" type="length" unit="mm"/>
+		<constant name="TWOPI_3" value="2.*pi"/>
+		<position name="pos_center" x="0.0" y="0.0" z="0" unit="mm"/>
+		<constant name="source_Alring_width_min" value="26."/>
+		<quantity name="source_Alring_radius_min" value="source_Alring_width_min/2" type="length" unit="mm"/>
+		<constant name="source_foil_height" value="0.5"/>
+		<quantity name="source_foil_z" value="source_foil_height" type="length" unit="mm"/>
+		<constant name="source_Alring_width_max" value="30."/>
+		<quantity name="source_Alring_radius_max" value="source_Alring_width_max/2" type="length" unit="mm"/>
+		<constant name="source_Alring_height" value="3."/>
+		<quantity name="source_Alring_z" value="source_Alring_height" type="length" unit="mm"/>
+		<constant name="TWOPI_4" value="2.*pi"/>
+		<constant name="source_holder_top_plate_height" value="3."/>
+		<quantity name="source_holder_top_plate_z" value="source_holder_top_plate_height" type="length" unit="mm"/>
+		<constant name="source_holder_top_height" value="10."/>
+		<quantity name="source_holder_top_z" value="source_holder_top_height" type="length" unit="mm"/>
+		<constant name="position_source_fromcryostat_z" value="200.0"/>
+		<quantity name="source_holder_cryostat_z" value="position_source_fromcryostat_z+source_holder_top_plate_height/2" type="length" unit="mm"/>
+		<constant name="source_holder_topbottom_height" value="6.1"/>
+		<quantity name="source_holder_z" value="position_source_fromcryostat_z+source_holder_topbottom_height" type="length" unit="mm"/>
+		<constant name="source_holder_top_plate_width" value="30."/>
+		<quantity name="source_holder_top_plate_radius" value="source_holder_top_plate_width/2" type="length" unit="mm"/>
+		<constant name="source_holder_top_inner_width" value="20."/>
+		<quantity name="source_holder_top_inner_radius" value="source_holder_top_inner_width/2" type="length" unit="mm"/>
+		<constant name="source_holder_inner_width" value="87."/>
+		<quantity name="source_holder_inner_radius" value="source_holder_inner_width/2" type="length" unit="mm"/>
+		<constant name="source_holder_bottom_inner_width" value="102."/>
+		<quantity name="source_holder_bottom_inner_radius" value="source_holder_bottom_inner_width/2" type="length" unit="mm"/>
+		<constant name="source_holder_outer_width" value="108."/>
+		<quantity name="source_holder_outer_radius" value="source_holder_outer_width/2" type="length" unit="mm"/>
+		<constant name="TWOPI_5" value="2.*pi"/>
+		<constant name="position_cryostat_cavity_fromTop" value="1.5"/>
+		<quantity name="start_cavity_z" value="position_cryostat_cavity_fromTop" type="length" unit="mm"/>
+		<constant name="cryostat_height" value="171.0"/>
+		<constant name="position_cryostat_cavity_fromBottom" value="0.8"/>
+		<quantity name="end_cavity_z" value="(cryostat_height-position_cryostat_cavity_fromBottom)" type="length" unit="mm"/>
+		<quantity name="cryostat_z" value="cryostat_height" type="length" unit="mm"/>
+		<constant name="cryostat_width" value="101.6"/>
+		<constant name="cryostat_thickness" value="1.5"/>
+		<quantity name="cryostat_cavity_radius" value="(cryostat_width-2*cryostat_thickness)/2" type="length" unit="mm"/>
+		<quantity name="cryostat_radius" value="cryostat_width/2" type="length" unit="mm"/>
+	</define>
+	<materials>
+		<isotope name="Ge70" Z="32" N="70">
+			<atom value="69.9243"/>
+		</isotope>
+		<isotope name="Ge72" Z="32" N="72">
+			<atom value="71.9221"/>
+		</isotope>
+		<isotope name="Ge73" Z="32" N="73">
+			<atom value="72.9235"/>
+		</isotope>
+		<isotope name="Ge74" Z="32" N="74">
+			<atom value="73.9212"/>
+		</isotope>
+		<isotope name="Ge76" Z="32" N="76">
+			<atom value="75.9214"/>
+		</isotope>
+		<element name="enr_ge" formula="Ge">
+			<fraction ref="Ge70" n="3.97e-05"/>
+			<fraction ref="Ge72" n="8.93e-05"/>
+			<fraction ref="Ge73" n="0.000278"/>
+			<fraction ref="Ge74" n="0.1258"/>
+			<fraction ref="Ge76" n="0.8738"/>
+		</element>
+		<material name="enriched_germanium">
+			<D value="5.545"/>
+			<fraction ref="enr_ge" n="1.0"/>
+		</material>
+		<element name="Hydrogen" formula="H" Z="1">
+			<atom value="1.0"/>
+		</element>
+		<element name="Carbon" formula="C" Z="6">
+			<atom value="12.01"/>
+		</element>
+		<material name="HD1000">
+			<D value="0.93"/>
+			<composite ref="Hydrogen" n="4"/>
+			<composite ref="Carbon" n="2"/>
+		</material>
+		<element name="Copper" formula="Cu" Z="29">
+			<atom value="63.546"/>
+		</element>
+		<element name="Lead" formula="Pb" Z="82">
+			<atom value="207.2"/>
+		</element>
+		<element name="Bismuth" formula="Bi" Z="83">
+			<atom value="208.98"/>
+		</element>
+		<element name="Aluminium" formula="Al" Z="13">
+			<atom value="26.98"/>
+		</element>
+		<material name="EN_AW-2011T8">
+			<D value="2.84"/>
+			<fraction ref="Copper" n="0.06"/>
+			<fraction ref="Lead" n="0.004"/>
+			<fraction ref="Bismuth" n="0.004"/>
+			<fraction ref="Aluminium" n="0.932"/>
+		</material>
+		<element name="Aluminium_0" formula="Al" Z="13">
+			<atom value="26.98"/>
+		</element>
+		<material name="Al">
+			<D value="2.7"/>
+			<fraction ref="Aluminium_0" n="1"/>
+		</material>
+		<element name="Lead_0" formula="Pb" Z="82">
+			<atom value="207.2"/>
+		</element>
+		<material name="Pb">
+			<D value="2.84"/>
+			<fraction ref="Lead_0" n="1"/>
+		</material>
+		<element name="Hydrogen_0" formula="H" Z="1">
+			<atom value="1.0"/>
+		</element>
+		<element name="Carbon_0" formula="C" Z="6">
+			<atom value="12.01"/>
+		</element>
+		<material name="HD1000_0">
+			<D value="0.93"/>
+			<composite ref="Hydrogen_0" n="4"/>
+			<composite ref="Carbon_0" n="2"/>
+		</material>
+		<element name="Carbon_1" formula="C" Z="6">
+			<atom value="12.01"/>
+		</element>
+		<element name="Hydrogen_1" formula="H" Z="1">
+			<atom value="1.0"/>
+		</element>
+		<element name="Oxygen" formula="O" Z="8">
+			<atom value="16.0"/>
+		</element>
+		<material name="Acrylic">
+			<D value="1.15"/>
+			<composite ref="Carbon_1" n="5"/>
+			<composite ref="Hydrogen_1" n="8"/>
+			<composite ref="Oxygen" n="8"/>
+		</material>
+		<element name="Copper_0" formula="Cu" Z="29">
+			<atom value="63.546"/>
+		</element>
+		<element name="Lead_1" formula="Pb" Z="82">
+			<atom value="207.2"/>
+		</element>
+		<element name="Bismuth_0" formula="Bi" Z="83">
+			<atom value="208.98"/>
+		</element>
+		<element name="Aluminium_1" formula="Al" Z="13">
+			<atom value="26.98"/>
+		</element>
+		<material name="EN_AW-2011T8_0">
+			<D value="2.84"/>
+			<fraction ref="Copper_0" n="0.06"/>
+			<fraction ref="Lead_1" n="0.004"/>
+			<fraction ref="Bismuth_0" n="0.004"/>
+			<fraction ref="Aluminium_1" n="0.932"/>
+		</material>
+	</materials>
+	<solids>
+		<box name="world" x="10" y="10" z="10" lunit="m"/>
+		<genericPolycone name="vacuum_cavity" startphi="0.0" deltaphi="6.283185307179586" lunit="mm" aunit="rad">
+			<rzpoint r="0.0" z="0.0"/>
+			<rzpoint r="49.3" z="0.0"/>
+			<rzpoint r="168.7" z="168.7"/>
+			<rzpoint r="0.0" z="168.7"/>
+		</genericPolycone>
+		<genericPolycone name="detector" startphi="1" deltaphi="TWOPI" lunit="mm" aunit="rad">
+			<rzpoint r="well_radius" z="0"/>
+			<rzpoint r="detector_radius" z="0"/>
+			<rzpoint r="detector_radius" z="detector_height"/>
+			<rzpoint r="groove_outer_radius" z="detector_height"/>
+			<rzpoint r="groove_outer_radius" z="groove_height"/>
+			<rzpoint r="groove_inner_radius" z="groove_height"/>
+			<rzpoint r="groove_inner_radius" z="detector_height"/>
+			<rzpoint r="0" z="detector_height"/>
+			<rzpoint r="0" z="well_height"/>
+			<rzpoint r="well_radius" z="well_height"/>
+		</genericPolycone>
+		<polycone name="wrap" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad">
+			<zplane rmin="0" rmax="wrap_radius" z="0"/>
+			<zplane rmin="0" rmax="wrap_radius" z="wrap_top_thickness"/>
+			<zplane rmin="wrap_cavity_radius" rmax="wrap_radius" z="wrap_top_thickness"/>
+			<zplane rmin="wrap_cavity_radius" rmax="wrap_radius" z="wrap_z"/>
+		</polycone>
+		<polycone name="holder" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad">
+			<zplane rmin="inner_radius" rmax="max_radius" z="0"/>
+			<zplane rmin="inner_radius" rmax="max_radius" z="edge_height"/>
+			<zplane rmin="inner_radius" rmax="outer_radius" z="edge_height"/>
+			<zplane rmin="inner_radius" rmax="outer_radius" z="pos_top_ring_z"/>
+			<zplane rmin="inner_radius" rmax="max_radius" z="pos_top_ring_z"/>
+			<zplane rmin="inner_radius" rmax="max_radius" z="end_top_ring_z"/>
+			<zplane rmin="inner_radius" rmax="outer_radius" z=" end_top_ring_z"/>
+			<zplane rmin="inner_radius" rmax="outer_radius" z="pos_bottom_ring_z"/>
+			<zplane rmin="inner_radius" rmax="max_radius" z="pos_bottom_ring_z"/>
+			<zplane rmin="inner_radius" rmax="max_radius" z="end_bottom_ring_z"/>
+			<zplane rmin="inner_radius" rmax="outer_radius" z="end_bottom_ring_z"/>
+			<zplane rmin="inner_radius" rmax="outer_radius" z="inner_height"/>
+			<zplane rmin="bottom_cyl_inner_radius" rmax="outer_radius" z="inner_height"/>
+			<zplane rmin="bottom_cyl_inner_radius" rmax="outer_radius" z="outer_height"/>
+			<zplane rmin="bottom_cyl_inner_radius" rmax="bottom_cyl_outer_radius" z="outer_height"/>
+			<zplane rmin="bottom_cyl_inner_radius" rmax="bottom_cyl_outer_radius" z="end_bottom_cyl_inner_z"/>
+			<zplane rmin="0" rmax="bottom_cyl_outer_radius" z="end_bottom_cyl_inner_z"/>
+			<zplane rmin="0" rmax="bottom_cyl_outer_radius" z="end_bottom_cyl_outer_z"/>
+		</polycone>
+		<box name="bottom_plate" x="bottom_plate_x" y="bottom_plate_y" z="bottom_plate_z" lunit="mm"/>
+		<box name="cavity_bottom_plate" x="cavity_bottom_plate_x" y="cavity_bottom_plate_y" z="cavity_bottom_plate_z" lunit="mm"/>
+		<subtraction name="final_bottom_plate">
+			<first ref="bottom_plate"/>
+			<second ref="cavity_bottom_plate"/>
+			<position name="final_bottom_plate_translation" x="0.0" y="(bottom_plate_y)/2" z="0.0" unit="mm"/>
+		</subtraction>
+		<box name="base_lead_castle_1" x="base_x_1" y="base_y_1" z="base_z_1" lunit="mm"/>
+		<box name="inner_cavity_base_1" x="inner_cavity_x_1" y="inner_cavity_y_1" z="inner_cavity_z_1" lunit="mm"/>
+		<box name="cavity_base_1" x="cavity_x_1" y="cavity_y_1" z="cavity_z_1" lunit="mm"/>
+		<union name="total_cavity_1">
+			<first ref="inner_cavity_base_1"/>
+			<second ref="cavity_base_1"/>
+			<position name="total_cavity_1_translation" x="0.0" y="(inner_cavity_y_1/2+(base_y_1-inner_cavity_y_1)/4)" z="(inner_cavity_z_1-cavity_z_1)/2" unit="mm"/>
+		</union>
+		<subtraction name="base_cavity_1">
+			<first ref="base_lead_castle_1"/>
+			<second ref="total_cavity_1"/>
+		</subtraction>
+		<box name="top_lead_castle_1" x="top_x_1" y="top_y_1" z="top_z_1" lunit="mm"/>
+		<union name="top_base_1">
+			<first ref="base_cavity_1"/>
+			<second ref="top_lead_castle_1"/>
+			<position name="top_base_1_translation" x="0.0" y="0.0" z="-(base_z_1+top_z_1)/2" unit="mm"/>
+		</union>
+		<box name="front_1" x="front_x_1" y="front_y_1" z="front_z_1" lunit="mm"/>
+		<union name="final_lead_castle_1">
+			<first ref="top_base_1"/>
+			<second ref="front_1"/>
+			<position name="final_lead_castle_1_translation" x="0.0" y="(base_y_1+front_y_1)/2" z="(base_z_1-front_z_1)/2" unit="mm"/>
+		</union>
+		<tube name="source" rmin="0" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad"/>
+		<tube name="source_foil" rmin="0" rmax="source_Alring_radius_min" z="source_foil_z" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad"/>
+		<tube name="source_Alring" rmin="source_Alring_radius_min" rmax="source_Alring_radius_max" z="source_Alring_z" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad"/>
+		<tube name="source_vacuum" rmin="0" rmax="source_Alring_radius_max" z="source_Alring_z" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad"/>
+		<polycone name="source_holder" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad">
+			<zplane rmin="source_holder_top_plate_radius" rmax="source_holder_outer_radius" z="0"/>
+			<zplane rmin="source_holder_top_plate_radius" rmax="source_holder_outer_radius" z="source_holder_top_plate_z"/>
+			<zplane rmin="source_holder_top_inner_radius" rmax="source_holder_outer_radius" z="source_holder_top_plate_z"/>
+			<zplane rmin="source_holder_top_inner_radius" rmax="source_holder_outer_radius" z="source_holder_top_z"/>
+			<zplane rmin="source_holder_inner_radius" rmax="source_holder_outer_radius" z="source_holder_top_z"/>
+			<zplane rmin="source_holder_inner_radius" rmax="source_holder_outer_radius" z="source_holder_cryostat_z"/>
+			<zplane rmin="source_holder_bottom_inner_radius" rmax="source_holder_outer_radius" z="source_holder_cryostat_z"/>
+			<zplane rmin="source_holder_bottom_inner_radius" rmax="source_holder_outer_radius" z="source_holder_z"/>
+		</polycone>
+		<polycone name="cryostat" startphi="0" deltaphi="TWOPI" lunit="mm" aunit="rad">
+			<zplane rmin="0" rmax="cryostat_radius" z="0"/>
+			<zplane rmin="0" rmax="cryostat_radius" z="start_cavity_z"/>
+			<zplane rmin="cryostat_cavity_radius" rmax="cryostat_radius" z="start_cavity_z"/>
+			<zplane rmin="cryostat_cavity_radius" rmax="cryostat_radius" z="end_cavity_z"/>
+			<zplane rmin="0" rmax="cryostat_radius" z="end_cavity_z"/>
+			<zplane rmin="0" rmax="cryostat_radius" z="cryostat_z"/>
+		</polycone>
+	</solids>
+	<structure>
+		<volume name="Detector">
+			<materialref ref="enriched_germanium"/>
+			<solidref ref="detector"/>
+		</volume>
+		<volume name="Wrap">
+			<materialref ref="HD1000"/>
+			<solidref ref="wrap"/>
+		</volume>
+		<volume name="Holder">
+			<materialref ref="EN_AW-2011T8"/>
+			<solidref ref="holder"/>
+		</volume>
+		<volume name="cavity_lv">
+			<materialref ref="G4_AIR"/>
+			<solidref ref="vacuum_cavity"/>
+			<physvol name="hpge_physical">
+				<volumeref ref="Detector"/>
+				<position name="hpge_physical_pos" x="0.000000000000000" y="0.000000000000000" z="5.000000000000000" unit="mm"/>
+			</physvol>
+			<physvol name="hpge_physical_1">
+				<volumeref ref="Wrap"/>
+				<position name="hpge_physical_pos" x="0.000000000000000" y="0.000000000000000" z="4.000000000000000" unit="mm"/>
+			</physvol>
+			<physvol name="hpge_physical_2">
+				<volumeref ref="Holder"/>
+				<position name="hpge_physical_pos" x="0.000000000000000" y="0.000000000000000" z="4.000000000000000" unit="mm"/>
+			</physvol>
+		</volume>
+		<volume name="Bottom_plate">
+			<materialref ref="Al"/>
+			<solidref ref="final_bottom_plate"/>
+		</volume>
+		<volume name="Lead_castle">
+			<materialref ref="Pb"/>
+			<solidref ref="final_lead_castle_1"/>
+		</volume>
+		<volume name="Source">
+			<materialref ref="HD1000_0"/>
+			<solidref ref="source"/>
+		</volume>
+		<volume name="Source_foil">
+			<materialref ref="HD1000_0"/>
+			<solidref ref="source_foil"/>
+			<physvol name="Source_PV">
+				<volumeref ref="Source"/>
+				<positionref ref="pos_center"/>
+			</physvol>
+		</volume>
+		<volume name="Source_Alring">
+			<materialref ref="G4_Al"/>
+			<solidref ref="source_Alring"/>
+		</volume>
+		<volume name="Source_Encapsulated">
+			<materialref ref="G4_Galactic"/>
+			<solidref ref="source_vacuum"/>
+			<physvol name="Source_foil_PV">
+				<volumeref ref="Source_foil"/>
+				<positionref ref="pos_center"/>
+			</physvol>
+			<physvol name="Source_Alring_PV">
+				<volumeref ref="Source_Alring"/>
+				<positionref ref="pos_center"/>
+			</physvol>
+		</volume>
+		<volume name="Source_Holder">
+			<materialref ref="Acrylic"/>
+			<solidref ref="source_holder"/>
+		</volume>
+		<volume name="Cryostat">
+			<materialref ref="EN_AW-2011T8_0"/>
+			<solidref ref="cryostat"/>
+		</volume>
+		<volume name="world_lv">
+			<materialref ref="G4_AIR"/>
+			<solidref ref="world"/>
+			<physvol name="cavity_pv">
+				<volumeref ref="cavity_lv"/>
+				<position name="cavity_pv_pos" x="0.000000000000000" y="0.000000000000000" z="1.500000000000000" unit="mm"/>
+			</physvol>
+			<physvol name="hpge_physical_3">
+				<volumeref ref="Bottom_plate"/>
+				<position name="hpge_physical_pos" x="0.000000000000000" y="0.000000000000000" z="257.500000000000000" unit="mm"/>
+			</physvol>
+			<physvol name="hpge_physical_4">
+				<volumeref ref="Lead_castle"/>
+			</physvol>
+			<physvol name="hpge_physical_5">
+				<volumeref ref="Source_Encapsulated"/>
+				<position name="hpge_physical_pos" x="0.000000000000000" y="0.000000000000000" z="-200.000000000000000" unit="mm"/>
+			</physvol>
+			<physvol name="hpge_physical_6">
+				<volumeref ref="Source_Holder"/>
+				<position name="hpge_physical_pos" x="0.000000000000000" y="0.000000000000000" z="-201.500000000000000" unit="mm"/>
+			</physvol>
+			<physvol name="hpge_physical_7">
+				<volumeref ref="Cryostat"/>
+			</physvol>
+		</volume>
+	</structure>
+	<userinfo>
+		<auxiliary auxtype="RMG_detector_meta" auxvalue=""/>
+	</userinfo>
+	<setup name="Default" version="1.0">
+		<world ref="world_lv"/>
+	</setup>
+</gdml>
