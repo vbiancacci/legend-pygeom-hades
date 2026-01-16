@@ -81,9 +81,6 @@ def construct(
 
     config = config if config is not None else {}
 
-    # TODO: handle a proper directory path
-    gdml_source_dir = "/Users/williamquinn/Documents/legend/legend-pygeom-hades/geom_gdml/"
-
     reg = geant4.Registry()
 
     # Create the world volume
@@ -96,28 +93,36 @@ def construct(
     cavity_lv = place_vacuum_cavity(reg, world_lv)
 
     if "detector" in assemblies:
-        place_detector(reg, world_lv, gdml_source_dir)
+        detector_pv = place_detector(reg, world_lv, from_gdml=True)
+        reg.addVolumeRecursive(detector_pv)
 
     if "wrap" in assemblies:
-        place_wrap(reg, cavity_lv, gdml_source_dir)
+        wrap_pv = place_wrap(reg, cavity_lv, from_gdml=True)
+        reg.addVolumeRecursive(wrap_pv)
 
     if "holder" in assemblies:
-        place_holder(reg, cavity_lv, gdml_source_dir)
+        holder_pv = place_holder(reg, cavity_lv, from_gdml=True)
+        reg.addVolumeRecursive(holder_pv)
 
     if "bottom_plate" in assemblies:
-        place_bottom_plate(reg, world_lv, gdml_source_dir)
+        plate_pv = place_bottom_plate(reg, world_lv, from_gdml=True)
+        reg.addVolumeRecursive(plate_pv)
 
     if "lead_castle" in assemblies:
-        place_lead_castle(reg, world_lv, gdml_source_dir)
+        castle_pv = place_lead_castle(reg, world_lv, from_gdml=True)
+        reg.addVolumeRecursive(castle_pv)
 
     if "source" in assemblies:
-        place_source(reg, world_lv, gdml_source_dir)
+        source_pv = place_source(reg, world_lv, from_gdml=True)
+        reg.addVolumeRecursive(source_pv)
 
     if "source_holder" in assemblies:
-        place_source_holder(reg, world_lv, gdml_source_dir)
+        s_holder_pv = place_source_holder(reg, world_lv, from_gdml=True)
+        reg.addVolumeRecursive(s_holder_pv)
 
     if "cryostat" in assemblies:
-        place_cryostat(reg, world_lv, gdml_source_dir)
+        cryo_pv = place_cryostat(reg, world_lv, from_gdml=True)
+        reg.addVolumeRecursive(cryo_pv)
 
     # visualize(reg)
     # generate_detector_macro(reg, "pv_reg.mac")

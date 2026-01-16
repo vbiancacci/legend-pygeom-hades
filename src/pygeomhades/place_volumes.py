@@ -39,7 +39,9 @@ def place_vacuum_cavity(reg: geant4.Registry, world_lv: geant4.LogicalVolume) ->
     return cavity_lv
 
 
-def place_detector(reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_detector(
+    reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     if from_gdml:
         reg_detector = _read_gdml_model("detector.gdml")
         detector_lv = reg_detector.getWorldVolume()
@@ -55,11 +57,12 @@ def place_detector(reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_g
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
+    return detector_pv
 
-    reg.addVolumeRecursive(detector_pv)
 
-
-def place_wrap(reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_wrap(
+    reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     # add wrap
     if from_gdml:
         reg_wrap = _read_gdml_model("wrap.gdml")
@@ -76,10 +79,12 @@ def place_wrap(reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml:
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(wrap_pv)
+    return wrap_pv
 
 
-def place_holder(reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_holder(
+    reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     if from_gdml:
         reg_holder = _read_gdml_model("holder.gdml")
         holder_lv = reg_holder.getWorldVolume()
@@ -95,10 +100,12 @@ def place_holder(reg: geant4.Registry, cavity_lv: geant4.LogicalVolume, from_gdm
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(holder_pv)
+    return holder_pv
 
 
-def place_bottom_plate(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_bottom_plate(
+    reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     if from_gdml:
         reg_plate = _read_gdml_model("bottom_plate.gdml")
         plate_lv = reg_plate.getWorldVolume()
@@ -114,10 +121,12 @@ def place_bottom_plate(reg: geant4.Registry, world_lv: geant4.LogicalVolume, fro
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(plate_pv)
+    return plate_pv
 
 
-def place_lead_castle(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_lead_castle(
+    reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     if from_gdml:
         reg_castle = _read_gdml_model("lead_castle_table1.gdml")
         castle_lv = reg_castle.getWorldVolume()
@@ -133,10 +142,12 @@ def place_lead_castle(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(castle_pv)
+    return castle_pv
 
 
-def place_source(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_source(
+    reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     if from_gdml:
         # TODO: replace this with a generic reader?
         reg_source = _read_gdml_model("source_encapsulated_ba_HS4.gdml")
@@ -153,12 +164,12 @@ def place_source(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(source_pv)
+    return source_pv
 
 
 def place_source_holder(
     reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False
-) -> None:
+) -> geant4.LogicalVolume:
     if from_gdml:
         reg_s_holder = _read_gdml_model("plexiglass_source_holder.gdml")
         s_holder_lv = reg_s_holder.getWorldVolume()
@@ -174,10 +185,12 @@ def place_source_holder(
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(s_holder_pv)
+    return s_holder_pv
 
 
-def place_cryostat(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False) -> None:
+def place_cryostat(
+    reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gdml: bool = False
+) -> geant4.LogicalVolume:
     if from_gdml:
         reg_cryo = _read_gdml_model("cryostat.gdml")
         cryo_lv = reg_cryo.getWorldVolume()
@@ -188,4 +201,4 @@ def place_cryostat(reg: geant4.Registry, world_lv: geant4.LogicalVolume, from_gd
         # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
-    reg.addVolumeRecursive(cryo_pv)
+    return cryo_pv
