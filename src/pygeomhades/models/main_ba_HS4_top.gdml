@@ -28,9 +28,7 @@
           <position name="pos_source" x="" y="" z="-position_source_fromcryostat_z" unit="mm" />
           <position name="pos_plexiglass_source_holder" z="-(position_source_fromcryostat_z+source_holder_top_plate_height/2)" unit="mm"/>
 	  <position name="pos_detector" z="(position_detector_fromcryostat_z-position_cryostat_cavity_fromTop)" unit="mm"/>
-	 <!-- <position name="pos_wrap" z="(position_holder_fromTop-position_cryostat_cavity_fromTop)" unit="mm"/>
-	  <position name="pos_wrap" z="(position_holder_fromTop-position_cryostat_cavity_fromTop-(wrap_outer_height-cylinder_inner_height))" unit="mm"/> --> <!--wrap height > holder inner height-->
-          <position name="pos_wrap" z="(position_wrap_fromcryostat_z-position_cryostat_cavity_fromTop)" unit="mm"/>
+	 <position name="pos_wrap" z="(position_wrap_fromcryostat_z-position_cryostat_cavity_fromTop)" unit="mm"/>
 	  <position name="pos_holder" z="(position_holder_fromcryostat_z-position_cryostat_cavity_fromTop)"  unit="mm"/>
 
 
