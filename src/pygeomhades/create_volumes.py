@@ -7,7 +7,7 @@ import numpy as np
 from pyg4ometry import gdml, geant4
 from pygeomhpges import make_hpge
 
-from pygeomhades import fixed_dimensions as dim
+from pygeomhades import dimensions as dim
 from pygeomhades.utils import _read_gdml_model
 
 # TODO: These functions seem very repetitive, maybe there is a way to reduce
@@ -215,7 +215,7 @@ def create_source_holder(from_gdml: bool = False) -> geant4.LogicalVolume:
     return s_holder_lv
 
 
-def create_cryostat(hpge_meta, from_gdml: bool = False) -> geant4.LogicalVolume:
+def create_cryostat(from_gdml: bool = False) -> geant4.LogicalVolume:
     if from_gdml:
         dummy_gdml_path = Path(__file__).parent / "models/dummy/cryostat_dummy.gdml"
         cryostat = dim.CRYOSTAT

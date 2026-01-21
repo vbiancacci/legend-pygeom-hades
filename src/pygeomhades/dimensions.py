@@ -1,53 +1,25 @@
 from __future__ import annotations
 
-# Fixed Dimensions
-# Base dimensions
-BASE_WIDTH = 480.0
-BASE_DEPTH = 450.0
-BASE_HEIGHT = 500.0
+SOURCE_HOLDER = {
+    "top_plate_height": 0.0,
+    "top_plate_width": 0.0,
+    "top_height": 0.0,
+    "top_inner_width": 0.0,
+    "inner_width": 0.0,
+    "bottom_inner_width": 0.0,
+    "outer_width": 0.0,
+    "top_bottom_height": 0.0,
+}
 
-# Inner cavity dimensions
-INNER_CAVITY_WIDTH = 300.0
-INNER_CAVITY_DEPTH = 250.0
-INNER_CAVITY__HEIGHT = 500.0
-
-# Cavity dimensions
-CAVITY_WIDTH = 120.0
-CAVITY_DEPTH = 100.0
-CAVITY_HEIGHT = 400.0
-
-# Top dimensions
-TOP_WIDTH = 300.0
-TOP_DEPTH = 300.0
-TOP_HEIGHT = 90.0
-
-# Front dimensions
-FRONT_WIDTH = 160.0
-FRONT_DEPTH = 100.0
-FRONT_HEIGHT = 400.0
-
-# Source holder dimensions
-SOURCE_HOLDER_TOP_PLATE_HEIGHT = 3.0
-SOURCE_HOLDER_TOP_PLATE_WIDTH = 30.0
-SOURCE_HOLDER_TOP_HEIGHT = 10.0
-SOURCE_HOLDER_TOP_INNER_WIDTH = 20.0
-SOURCE_HOLDER_INNER_WIDTH = 87.0
-SOURCE_HOLDER_BOTTOM_INNER_WIDTH = 102.0
-SOURCE_HOLDER_OUTER_WIDTH = 108.0
-SOURCE_HOLDER_TOPBOTTOM_HEIGHT = 6.1
-
-# Source dimensions
-SOURCE_HEIGHT = 0.1
-SOURCE_WIDTH = 5.0
-
-# Source foil
-SOURCE_FOIL_HEIGHT = 0.5
-SOURCE_FOIL_WIDTH = 26.0
-
-# Aluminum ring around source
-SOURCE_AL_RING_HEIGHT = 3.0
-SOURCE_AL_RING_WIDTH_MAX = 30.0
-SOURCE_AL_RING_WIDTH_MIN = 26.0
+SOURCE = {
+    "height": 0.0,
+    "width": 0.0,
+    "foil_height": 0.0,
+    "foil_width": 0.0,
+    "al_ring_height": 0.0,
+    "al_ring_width_max": 0.0,
+    "al_ring_width_min": 0.0,
+}
 
 LEAD_CASTLE_1 = {
     "base_width": 480,
@@ -82,6 +54,8 @@ LEAD_CASTLE_2 = {
     "copper_plate_height": 10,
 }
 
+LEAD_CASTLE = {}
+
 BOTTOM_PLATE = {
     "width": 750,
     "depth": 750,
@@ -91,7 +65,6 @@ BOTTOM_PLATE = {
     "cavity_height": 20,
 }
 
-# Cryostat dimensions
 CRYOSTAT = {
     "height": 0,
     "width": 0,
@@ -101,17 +74,15 @@ CRYOSTAT = {
     "position_from_bottom": 0,
 }
 
-# Changing relative dimensions
-# Positions relative to cryostat initialise
-POSITIONS_FROM_CRYOSTAT = {"detector": 0.0, "holder": 0.0, "wrap": 0.0}
-POSITION_SOURCE_FROM_CRYOSTAT_PHI = 0.0
-POSITION_SOURCE_FROM_CRYOSTAT_R = 0.0
-POSITION_SOURCE_FROM_CRYOSTAT_X = 0.0
-POSITION_SOURCE_FROM_CRYOSTAT_Y = -0.0
-POSITION_SOURCE_FROM_CRYOSTAT_Z = 200.0
+POSITIONS_FROM_CRYOSTAT = {
+    "detector": 0.0,
+    "holder": 0.0,
+    "wrap": 0.0,
+    "source": {"phi": 0.0, "r": 0.0, "x": 0.0, "y": 0.0, "z": 0.0},
+}
 
 
-def update_cryostat_dims(hpge_meta):
+def update_dims(hpge_meta: dict, config: dict) -> None:
     POSITIONS_FROM_CRYOSTAT["detector"] = hpge_meta["hades"]["dimensions"]["detector"]["position"]
     POSITIONS_FROM_CRYOSTAT["holder"] = hpge_meta["hades"]["dimensions"]["holder"]["position"]
     POSITIONS_FROM_CRYOSTAT["wrap"] = hpge_meta["hades"]["dimensions"]["wrap"]["position"]
@@ -135,3 +106,12 @@ def update_cryostat_dims(hpge_meta):
 
         if hpge_meta["production"]["order"] == 9 and hpge_meta["production"]["slice"] == "B":
             CRYOSTAT["width"] = 107.95
+
+    LEAD_CASTLE.clear()
+    if config["lead_castle"] == 1:
+        LEAD_CASTLE.update(LEAD_CASTLE_1)
+    elif config["lead_castle"] == 2:
+        LEAD_CASTLE.update(LEAD_CASTLE_2)
+    else:
+        msg = "only 2 lead castle options"
+        raise RuntimeError(msg)

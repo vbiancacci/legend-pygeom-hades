@@ -10,7 +10,7 @@ from git import GitCommandError
 from legendmeta import LegendMetadata
 from pyg4ometry import geant4, visualisation
 
-from pygeomhades import fixed_dimensions as dim
+from pygeomhades import dimensions as dim
 from pygeomhades.create_volumes import (
     create_bottom_plate,
     create_cryostat,
@@ -101,7 +101,7 @@ def construct(
 
     hpge_name = config["hpge_name"]
     hpge_meta = merge_configs(hpge_name, lmeta, dimensions)
-    dim.update_cryostat_dims(hpge_meta)
+    dim.update_dims(hpge_meta, config)
 
     reg = geant4.Registry()
 
@@ -180,7 +180,7 @@ def construct(
         castle_lv = create_lead_castle(config["lead_castle"], from_gdml=True)
         geant4.PhysicalVolume(
             [0, 0, 0],
-            [0, 0, dim.CRYOSTAT["position_cavity_from_bottom"] - (dim.BASE_HEIGHT) / 2, "mm"],
+            [0, 0, dim.CRYOSTAT["position_cavity_from_bottom"] - (dim.LEAD_CASTLE["base_height"]) / 2, "mm"],
             castle_lv,
             "castle_pv",
             world_lv,
@@ -191,7 +191,7 @@ def construct(
         source_lv = create_source(from_gdml=True)
         geant4.PhysicalVolume(
             [0, 0, 0],
-            [0, 0, -dim.POSITION_SOURCE_FROM_CRYOSTAT_Z, "mm"],
+            [0, 0, -dim.POSITIONS_FROM_CRYOSTAT["source"]["z"], "mm"],
             source_lv,
             "source_pv",
             world_lv,
@@ -202,7 +202,12 @@ def construct(
         s_holder_lv = create_source_holder(from_gdml=True)
         geant4.PhysicalVolume(
             [0, 0, 0],
-            [0, 0, -(dim.POSITION_SOURCE_FROM_CRYOSTAT_Z + dim.SOURCE_HOLDER_TOP_PLATE_HEIGHT / 2), "mm"],
+            [
+                0,
+                0,
+                -(dim.POSITIONS_FROM_CRYOSTAT["source"]["z"] + dim.SOURCE_HOLDER["top_plate_height"] / 2),
+                "mm",
+            ],
             s_holder_lv,
             "s_holder_pv",
             world_lv,
