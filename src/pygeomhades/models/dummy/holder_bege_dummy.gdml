@@ -2,19 +2,14 @@
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 	<define>
-
 	  	<constant name="TWOPI" value="2.*pi"/>
-
 	  	<quantity name="max_radius" type="length"  value="max_radius_in_mm" unit="mm"/>
-
 	  	<quantity name="outer_height" type="length" value="outer_height_in_mm" unit="mm"/>
 	  	<quantity name="inner_height" type="length" value="inner_height_in_mm" unit="mm"/>
 	  	<quantity name="outer_radius" type="length" value="outer_radius_in_mm" unit="mm"/>
 	  	<quantity name="inner_radius" type="length" value="inner_radius_in_mm" unit="mm"/>
-
 	  	<quantity name="pos_top_ring_z" type="length"  value="position_top_ring_in_mm" unit="mm"/>
 	  	<quantity name="end_top_ring_z" type="length" value="end_top_ring_in_mm"  unit="mm"/>
-
 	</define>
 
 	<materials>
@@ -30,7 +25,6 @@
 	    <element Z="13" formula="Al" name="Aluminium" >
 	        <atom value="26.98" />
 	    </element>
-
 	    <material name="EN_AW-2011T8" formula="Al_Cu6BiPb" >
 	        <D value="2.84" unit="g/cm3" />
 	        <fraction n="0.06" ref="Copper" />
@@ -41,7 +35,6 @@
 	</materials>
 
 	<solids>
-
 		<polycone name="holder" startphi="0" deltaphi="TWOPI" aunit="rad">
 	        <zplane rmin="inner_radius" rmax="outer_radius" z="0" />
 	        <zplane rmin="inner_radius" rmax="outer_radius" z="pos_top_ring_z" />
@@ -52,7 +45,6 @@
 	        <zplane rmin="0" rmax="outer_radius" z="inner_height" />
 	        <zplane rmin="0" rmax="outer_radius" z="outer_height" />
 	    </polycone>
-
 	</solids>
 
 	<structure>

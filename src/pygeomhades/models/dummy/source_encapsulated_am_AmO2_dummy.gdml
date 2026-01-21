@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+	<define>
+		<constant name="TWOPI" value="2.*pi"/>
+		<quantity name="source_z" type="length" value="source_height" unit="mm"/>
+		<quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
+		<quantity name="source_capsule_z" type="length" value="source_capsule_height" unit="mm"/>
+		<quantity name="source_capsule_radius" type="length" value="source_capsule_width/2" unit="mm"/>
+		<quantity name="window" type="length" value="window_source" unit="mm" />
+		<position name="pos_source_capsule" z="(source_capsule_z-source_z)/2-window"/>
+	</define>
+
+	<materials>
+		<element Z="95" formula="Am" name="Americium" >
+			<atom value="241.06" />
+		</element>
+		<element Z="8" formula="O" name="Oxygen" >
+			<atom value="16" />
+		</element>
+		<material name="AmericiumOxide" formula="AmOx">
+			<D value="11.68" unit="g/cm3"/>
+			<composite n="1" ref="Americium" />
+			<composite n="2" ref="Oxygen" />
+		</material>
+	</materials>
+
+	<solids>
+		<tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+		<tube name="source_capsule" rmax="source_capsule_radius" z="source_capsule_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	</solids>
+
+	<structure>
+		<volume name="Source">
+			<materialref ref="AmericiumOxide"/>
+			<solidref ref="source"/>
+		</volume>
+		<volume name="Source_Encapsulated">
+			<materialref ref="G4_STAINLESS-STEEL"/>
+			<solidref ref="source_capsule"/>
+			<physvol>
+				<volumeref ref="Source"/>
+				<positionref ref="pos_source_capsule"/>
+			</physvol>
+		</volume>
+	</structure>
+
+	<setup name="Default" version="1.0">
+		<world ref="Source_Encapsulated"/>
+	</setup>
+
+</gdml>

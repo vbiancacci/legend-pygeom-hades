@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+	<define>
+		<constant name="TWOPI" value="2.*pi"/>
+		<quantity name="source_plates_z" type="length" value="source_plates_height" unit="mm"/>
+		<quantity name="source_plates_radius" type="length" value="source_plates_width/2" unit="mm"/>
+		<quantity name="source_plates_cavity_radius" type="length" value="source_plates_cavity_width/2" unit="mm"/>
+	</define>
+
+	<solids>
+		<tube name="source_plates" rmin="source_plates_cavity_radius" rmax="source_plates_radius" z="source_plates_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+	</solids>
+
+	<structure>
+		<volume name="Source_Plates">
+			<materialref ref="G4_Pb"/>
+			<solidref ref="source_plates"/>
+		</volume>
+	</structure>
+
+ 	<setup name="Default" version="1.0">
+ 	    <world ref="Source_Plates"/>
+ 	</setup>
+
+</gdml>

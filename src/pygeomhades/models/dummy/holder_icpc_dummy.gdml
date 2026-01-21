@@ -2,29 +2,21 @@
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
 	<define>
-
   		<constant name="TWOPI" value="2.*pi"/>
-
   		<quantity name="max_radius" type="length"  value="max_radius_in_mm" unit="mm"/>
-
   		<quantity name="outer_height" type="length" value="outer_height_in_mm" unit="mm"/>
   		<quantity name="inner_height" type="length" value="inner_height_in_mm" unit="mm"/>
   		<quantity name="outer_radius" type="length" value="outer_radius_in_mm" unit="mm"/>
   		<quantity name="inner_radius" type="length" value="inner_radius_in_mm" unit="mm"/>
-
   		<quantity name="bottom_cyl_inner_radius" type="length" value="inner_bottom_cyl_radius_in_mm" unit="mm"/>
   		<quantity name="bottom_cyl_outer_radius" type="length" value="outer_bottom_cyl_radius_in_mm" unit="mm"/>
-
   		<quantity name="edge_height" type="length" value="edge_height_in_mm" unit="mm"/>
-
   		<quantity name="pos_bottom_ring_z" type="length"  value="pos_bottom_ring_in_mm" unit="mm"/>
   		<quantity name="pos_top_ring_z" type="length"  value="pos_top_ring_in_mm" unit="mm"/>
-
   		<quantity name="end_top_ring_z" type="length" value="end_top_ring_in_mm"  unit="mm"/>
   		<quantity name="end_bottom_ring_z" type="length" value="end_bottom_ring_in_mm"  unit="mm"/>
   		<quantity name="end_bottom_cyl_outer_z" type="length" value="end_bottom_cyl_outer_in_mm" unit="mm" />
   		<quantity name="end_bottom_cyl_inner_z" type="length" value="end_bottom_cyl_inner_in_mm" unit="mm" />
-
  	</define>
 
  	<materials>
@@ -40,7 +32,6 @@
 	 	<element Z="83" formula="Bi" name="Bismuth" >
 		 	<atom value="208.98" />
 	 	</element>
-
 	 	<material name="EN_AW-2011T8" formula="Al_Cu6BiPb" >
 		 	<D value="2.84" unit="g/cm3" />
 		 	<fraction n="0.06" ref="Copper" />
@@ -48,11 +39,9 @@
 		 	<fraction n="0.004" ref="Bismuth" />
 		 	<fraction n="0.932" ref="Aluminium" />
 	 	</material>
-
  	</materials>
 
  	<solids>
-
 	 	<polycone name="holder" startphi="0" deltaphi="TWOPI" aunit="rad">
 			<zplane rmin="inner_radius" rmax="max_radius" z="0" />
 			<zplane rmin="inner_radius" rmax="max_radius" z="edge_height" />
@@ -73,8 +62,6 @@
 			<zplane rmin="0" rmax="bottom_cyl_outer_radius" z="end_bottom_cyl_inner_z" />
 			<zplane rmin="0" rmax="bottom_cyl_outer_radius" z="end_bottom_cyl_outer_z" />
 	 	</polycone>
-
-
  	</solids>
 
  	<structure>
@@ -83,7 +70,6 @@
 			<solidref ref="holder"/>
 		</volume>
  	</structure>
-
 
  	<setup name="Default" version="1.0">
 		<world ref="Holder"/>
