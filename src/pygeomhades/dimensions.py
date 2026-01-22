@@ -138,14 +138,6 @@ bottom_plate = {
     "cavity_height": 20,
 }
 
-cryostat = {
-    "height": 0,
-    "width": 0,
-    "thickness": 0,
-    "position_cavity_from_top": 0,
-    "position_cavity_from_bottom": 0,
-    "position_from_bottom": 0,
-}
 
 positions_from_cryostat = {
     "detector": 0.0,
@@ -159,26 +151,6 @@ def update_dims(hpge_meta: Mapping, config: Mapping) -> None:
     positions_from_cryostat["detector"] = hpge_meta["hades"]["dimensions"]["detector"]["position"]
     positions_from_cryostat["holder"] = hpge_meta["hades"]["dimensions"]["holder"]["position"]
     positions_from_cryostat["wrap"] = hpge_meta["hades"]["dimensions"]["wrap"]["position"]
-
-    cryostat["position_cavity_from_top"] = 1.5
-    cryostat["position_cavity_from_bottom"] = 0.8
-    cryostat["position_from_bottom"] = 250.0
-    cryostat["thickness"] = 1.5
-
-    if hpge_meta["type"] == "bege":
-        cryostat["height"] = 122.2
-        cryostat["width"] = 101.6
-
-    elif hpge_meta["type"] == "icpc":
-        xl_orders = [3, 8, 9, 10]
-        cryostat["height"] = 171.0
-        if hpge_meta["production"]["order"] in xl_orders:
-            cryostat["width"] = 114.3
-        else:
-            cryostat["width"] = 101.6
-
-        if hpge_meta["production"]["order"] == 9 and hpge_meta["production"]["slice"] == "B":
-            cryostat["width"] = 107.95
 
     lead_castle.clear()
     if config["lead_castle"] == 1:

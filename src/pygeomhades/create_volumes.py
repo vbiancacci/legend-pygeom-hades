@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 
 import numpy as np
@@ -8,7 +9,7 @@ from pyg4ometry import geant4
 from pygeomhpges import make_hpge
 
 from pygeomhades import dimensions as dim
-from pygeomhades.utils import amend_gdml
+from pygeomhades.utils import read_gdml_with_replacements
 
 
 def create_vacuum_cavity(cryostat_metadata: AttrsDict, registry: geant4.Registry) -> geant4.LogicalVolume:
@@ -63,21 +64,46 @@ def create_detector(reg: geant4.Registry, ged_meta_dict: AttrsDict) -> geant4.Lo
     return make_hpge(ged_meta_dict, name=ged_meta_dict.name, registry=reg)
 
 
-def create_wrap(detector_meta: dict, from_gdml: bool = False) -> geant4.LogicalVolume:
-    wrap = detector_meta["hades"]["dimensions"]["wrap"]["geometry"]
+def create_wrap(wrap_metadata: AttrsDict, from_gdml: bool = False) -> geant4.LogicalVolume:
+    """Create the mylar wrap.
+
+    :: warning
+
+        The returned logical volume belongs to its own registry,
+        it is necessary to call {func}`reg.addVolumeRecursive` on
+        the produced PhysicalVolume to get a sane registry.
+
+    Parameters
+    ----------
+    wrap_metadata
+        The information on the dimensions of the mylar wrap,
+        should be of the format:
+
+        .. code-block:: yaml
+            outer:
+                height_in_mm: 100
+                radius_in_mm: 100
+            inner:
+                height_in_mm: 99
+                radius_in_mm: 99
+
+    from_gdml
+        whether to read the geometry from GDML or construct it directly.
+    """
     if from_gdml:
-        dummy_gdml_path = Path(__file__).parent / "models/dummy/wrap_dummy.gdml"
+        dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "wrap_dummy.gdml"
+
         replacements = {
-            "wrap_outer_height_in_mm": wrap["outer"]["height_in_mm"],
-            "wrap_outer_radius_in_mm": wrap["outer"]["radius_in_mm"],
-            "wrap_inner_radius_in_mm": wrap["inner"]["radius_in_mm"],
-            "wrap_top_thickness_in_mm": wrap["outer"]["height_in_mm"] - wrap["inner"]["height_in_mm"],
+            "wrap_outer_height_in_mm": wrap_metadata.outer.height_in_mm,
+            "wrap_outer_radius_in_mm": wrap_metadata.outer.radius_in_mm,
+            "wrap_inner_radius_in_mm": wrap_metadata.inner.radius_in_mm,
+            "wrap_top_thickness_in_mm": wrap_metadata.outer.height_in_mm - wrap_metadata.inner.height_in_mm,
         }
-        wrap_lv = amend_gdml(dummy_gdml_path, replacements).getWorldVolume()
+        wrap_lv = read_gdml_with_replacements(dummy_gdml_path, replacements)
     else:
-        # TODO: add the construction of geometry
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
+
     return wrap_lv
 
 
