@@ -10,7 +10,7 @@ import dbetto
 from dbetto import TextDB
 from git import GitCommandError
 from legendmeta import LegendMetadata
-from pyg4ometry import geant4, visualisation
+from pyg4ometry import geant4
 
 from pygeomhades import dimensions as dim
 from pygeomhades.create_volumes import (
@@ -235,9 +235,5 @@ def construct(
     if "cryostat" in assemblies:
         cryo_lv = create_cryostat(from_gdml=True)
         geant4.PhysicalVolume([0, 0, 0], [0, 0, 0, "mm"], cryo_lv, "cryo_pv", world_lv, registry=reg)
-
-    v = visualisation.VtkViewerColoured(defaultColour="random")
-    v.addLogicalVolume(reg.getWorldVolume())
-    v.view()
 
     return reg
