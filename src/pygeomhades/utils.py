@@ -7,7 +7,6 @@ from pathlib import Path
 
 from dbetto import AttrsDict
 from pyg4ometry import gdml, geant4
-from pygeomtools import write_pygeom as write_gdml
 
 log = logging.getLogger(__name__)
 
@@ -36,12 +35,20 @@ def merge_configs(diode_meta: AttrsDict, extra_meta: Mapping, *, extra_name: str
     return diode_meta
 
 
-def amend_gdml(
+def read_gdml_with_replacements(
     dummy_gdml_path: Path,
-    replacements: dict,
-    write_file: bool = False,
-    gdml_file_name: str | Path = "test.gdml",
-) -> geant4.Registry:
+    replacements: Mapping,
+) -> geant4.LogicalVolume:
+    """Read a GDML file including replacements.
+
+    Parameters
+    ----------
+    dummy_gdml_path
+        path to the GDML template.
+    replacements
+        Constants in the GDML file to replace.
+    """
+
     gdml_text = dummy_gdml_path.read_text()
 
     for key, val in replacements.items():
@@ -52,7 +59,10 @@ def amend_gdml(
         f.flush()
         reader = gdml.Reader(f.name)
 
-        if write_file:
-            write_gdml(reader.getRegistry(), gdml_file_name)
+        reg_tmp = reader.getRegistry()
 
-        return reader.getRegistry()
+    if len(reg_tmp.logicalVolumeList) != 1:
+        msg = f"The GDML file should contain one logical volume not {reg_tmp.logicalVolumeDict.keys()}"
+        raise RuntimeError(msg)
+
+    return next(iter(reg_tmp.logicalVolumeDict.values()))

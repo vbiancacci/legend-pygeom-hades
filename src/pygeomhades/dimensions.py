@@ -5,6 +5,23 @@ from collections.abc import Mapping
 from dbetto import AttrsDict
 
 
+def get_bottom_plate_metadata() -> AttrsDict:
+    """Extract the metadata describing the bottom plate."""
+
+    return AttrsDict(
+        {
+            "width": 750,
+            "depth": 750,
+            "height": 15,
+            "cavity": {
+                "width": 120,
+                "depth": 940,  # <!--475*2-->
+                "height": 20,
+            },
+        }
+    )
+
+
 def get_cryostat_metadata(det_type: str, order: int, xtal_slice: str) -> AttrsDict:
     """Extract the metadata corresponding the the cryostat
 
@@ -94,106 +111,76 @@ source = {
     "gdml_dummy": "",
 }
 
-lead_castle_1 = {
-    "base_width": 480,
-    "base_depth": 450,
-    "base_height": 500,
-    "inner_cavity_width": 300,
-    "inner_cavity_depth": 250,
-    "inner_cavity_height": 500,
-    "cavity_width": 120,
-    "cavity_depth": 100,
-    "cavity_height": 400,
-    "top_width": 300,
-    "top_depth": 300,
-    "top_height": 90,
-    "front_width": 160,
-    "front_depth": 100,
-    "front_height": 400,
-}
 
-lead_castle_2 = {
-    "base_width": 350,
-    "base_depth": 350,
-    "base_height": 400,
-    "inner_cavity_width": 250,
-    "inner_cavity_depth": 250,
-    "inner_cavity_height": 400,
-    "top_width": 200,
-    "top_depth": 200,
-    "top_height": 50,
-    "copper_plate_width": 350,
-    "copper_plate_depth": 350,
-    "copper_plate_height": 10,
-}
+def get_castle_dimensions(table_num: int) -> AttrsDict:
+    """Extract the lead castle dimensions for a given table.
 
-lead_castle = {}
+    Parameters
+    ----------
+    table_num
+        The number of the table to use, can be 1 or 2.
+    """
 
-bottom_plate = {
-    "width": 750,
-    "depth": 750,
-    "height": 15,
-    "cavity_width": 120,
-    "cavity_depth": 940,  # <!--475*2-->
-    "cavity_height": 20,
-}
+    if table_num == 1:
+        lead_castle = {
+            "base": {
+                "width": 480,
+                "depth": 450,
+                "height": 500,
+            },
+            "inner_cavity": {
+                "width": 300,
+                "depth": 250,
+                "height": 500,
+            },
+            "cavity": {
+                "width": 120,
+                "depth": 100,
+                "height": 400,
+            },
+            "top": {
+                "width": 300,
+                "depth": 300,
+                "height": 90,
+            },
+            "front": {
+                "width": 160,
+                "depth": 100,
+                "height": 400,
+            },
+        }
+    elif table_num == 2:
+        lead_castle = {
+            "base": {
+                "width": 350,
+                "depth": 350,
+                "height": 400,
+            },
+            "inner_cavity": {
+                "width": 250,
+                "depth": 250,
+                "height": 400,
+            },
+            "top": {
+                "width": 200,
+                "depth": 200,
+                "height": 50,
+            },
+            "copper_plate": {
+                "width": 350,
+                "depth": 350,
+                "height": 10,
+            },
+        }
 
-cryostat = {
-    "height": 0,
-    "width": 0,
-    "thickness": 0,
-    "position_cavity_from_top": 0,
-    "position_cavity_from_bottom": 0,
-    "position_from_bottom": 0,
-}
+    else:
+        msg = "Table number must be 1 or 2"
+        raise ValueError(msg)
 
-positions_from_cryostat = {
-    "detector": 0.0,
-    "holder": 0.0,
-    "wrap": 0.0,
-    "source": {"phi": 0.0, "r": 0.0, "x": 0.0, "y": 0.0, "z": 0.0},
-}
+    return AttrsDict(lead_castle)
 
 
 def update_dims(hpge_meta: Mapping, config: Mapping) -> None:
-    positions_from_cryostat["detector"] = hpge_meta["hades"]["dimensions"]["detector"]["position"]
-    positions_from_cryostat["holder"] = hpge_meta["hades"]["dimensions"]["holder"]["position"]
-    positions_from_cryostat["wrap"] = hpge_meta["hades"]["dimensions"]["wrap"]["position"]
-
-    cryostat["position_cavity_from_top"] = 1.5
-    cryostat["position_cavity_from_bottom"] = 0.8
-    cryostat["position_from_bottom"] = 250.0
-    cryostat["thickness"] = 1.5
-
-    if hpge_meta["type"] == "bege":
-        cryostat["height"] = 122.2
-        cryostat["width"] = 101.6
-
-    elif hpge_meta["type"] == "icpc":
-        xl_orders = [3, 8, 9, 10]
-        cryostat["height"] = 171.0
-        if hpge_meta["production"]["order"] in xl_orders:
-            cryostat["width"] = 114.3
-        else:
-            cryostat["width"] = 101.6
-
-        if hpge_meta["production"]["order"] == 9 and hpge_meta["production"]["slice"] == "B":
-            cryostat["width"] = 107.95
-
-    lead_castle.clear()
-    if config["lead_castle"] == 1:
-        lead_castle.update(lead_castle_1)
-    elif config["lead_castle"] == 2:
-        lead_castle.update(lead_castle_2)
-    else:
-        msg = "only 2 lead castle options"
-        raise RuntimeError(msg)
-
-    positions_from_cryostat["source"]["phi"] = 0
-    positions_from_cryostat["source"]["x"] = 0.0
-    positions_from_cryostat["source"]["y"] = 0.0
-    positions_from_cryostat["source"]["z"] = 0.0
-
     if config["source"] == "am_collimated":
         source["height"] = 2.0
         source["width"] = 1.0
