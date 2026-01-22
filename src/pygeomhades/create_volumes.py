@@ -462,7 +462,6 @@ def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = False) -> geant4
     from_gdml
         Whether to construct from a GDML file
 
-
     """
 
     if not from_gdml:
