@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 source_holder = {
     "lat": {"height": 0.0, "cavity_height": 0.0, "cavity_width": 0.0},
     "am": {
@@ -107,7 +109,7 @@ positions_from_cryostat = {
 }
 
 
-def update_dims(hpge_meta: dict, config: dict) -> None:
+def update_dims(hpge_meta: Mapping, config: Mapping) -> None:
     positions_from_cryostat["detector"] = hpge_meta["hades"]["dimensions"]["detector"]["position"]
     positions_from_cryostat["holder"] = hpge_meta["hades"]["dimensions"]["holder"]["position"]
     positions_from_cryostat["wrap"] = hpge_meta["hades"]["dimensions"]["wrap"]["position"]
@@ -134,9 +136,9 @@ def update_dims(hpge_meta: dict, config: dict) -> None:
 
     lead_castle.clear()
     if config["lead_castle"] == 1:
-        source.update(lead_castle_1)
+        lead_castle.update(lead_castle_1)
     elif config["lead_castle"] == 2:
-        source.update(lead_castle_2)
+        lead_castle.update(lead_castle_2)
     else:
         msg = "only 2 lead castle options"
         raise RuntimeError(msg)

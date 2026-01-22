@@ -106,7 +106,7 @@ def create_holder(detector_meta: dict, from_gdml: bool = False) -> geant4.Logica
 def create_bottom_plate(from_gdml: bool = False) -> geant4.Registry:
     if from_gdml:
         dummy_gdml_path = Path(__file__).parent / "models/dummy/bottom_plate_dummy.gdml"
-        plate = dim.BOTTOM_PLATE
+        plate = dim.bottom_plate
         replacements = {
             "bottom_plate_width": plate["width"],
             "bottom_plate_depth": plate["depth"],
@@ -127,7 +127,7 @@ def create_lead_castle(table_num: int, from_gdml: bool = False) -> geant4.Logica
     if from_gdml:
         if table_num == 1:
             dummy_gdml_path = Path(__file__).parent / "models/dummy/lead_castle_table1_dummy.gdml"
-            lead_castle = dim.LEAD_CASTLE_1
+            lead_castle = dim.lead_castle_1
             replacements = {
                 "base_width_1": lead_castle["base_width"],
                 "base_depth_1": lead_castle["base_depth"],
@@ -147,7 +147,7 @@ def create_lead_castle(table_num: int, from_gdml: bool = False) -> geant4.Logica
             }
         elif table_num == 2:
             dummy_gdml_path = Path(__file__).parent / "models/dummy/lead_castle_table2_dummy.gdml"
-            lead_castle = dim.LEAD_CASTLE_2
+            lead_castle = dim.lead_castle_2
             replacements = {
                 "base_width_2": lead_castle["base_width"],
                 "base_depth_2": lead_castle["base_depth"],

@@ -4,6 +4,7 @@ import contextlib
 import logging
 from collections.abc import Mapping
 from importlib import resources
+from pathlib import Path
 
 import dbetto
 from dbetto import TextDB
@@ -33,11 +34,11 @@ DEFAULT_DIMENSIONS = TextDB(resources.files("pygeomhades") / "configs" / "holder
 
 DEFAULT_ASSEMBLIES = {
     "vacuum_cavity",
-    # "bottom_plate",
-    # "lead_castle",
-    # "cryostat",
-    # "holder",
-    # "wrap",
+    "bottom_plate",
+    "lead_castle",
+    "cryostat",
+    "holder",
+    "wrap",
     "detector",
     "source",
     "source_holder",
@@ -46,7 +47,7 @@ DEFAULT_ASSEMBLIES = {
 
 def construct(
     assemblies: list[str] | set[str] = DEFAULT_ASSEMBLIES,
-    dimensions: Mapping = DEFAULT_DIMENSIONS,
+    dimensions: TextDB | Path | str = DEFAULT_DIMENSIONS,
     config: str | Mapping | None = None,
     public_geometry: bool = False,
 ) -> geant4.Registry:
@@ -70,6 +71,9 @@ def construct(
       if true, uses the public geometry metadata instead of the LEGEND-internal
       legend-metadata.
     """
+
+    if not isinstance(dimensions, TextDB):
+        dimensions = TextDB(dimensions)
 
     if isinstance(config, str):
         config = dbetto.utils.load_dict(config)
@@ -99,7 +103,8 @@ def construct(
 
     hpge_name = config["hpge_name"]
     diode_meta = lmeta.hardware.detectors.germanium.diodes[hpge_name]
-    hpge_meta = merge_configs(diode_meta, {"hades": {"dimensions": dimensions}})
+    hpge_meta = merge_configs(diode_meta, {"dimensions": dimensions[hpge_name]})
+
     dim.update_dims(hpge_meta, config)
 
     reg = geant4.Registry()
