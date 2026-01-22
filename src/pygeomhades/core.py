@@ -34,14 +34,14 @@ DEFAULT_DIMENSIONS = TextDB(resources.files("pygeomhades") / "configs" / "holder
 
 DEFAULT_ASSEMBLIES = {
     "vacuum_cavity",
-    "bottom_plate",
-    "lead_castle",
-    "cryostat",
-    "holder",
-    "wrap",
+    # "bottom_plate",
+    # "lead_castle",
+    # "cryostat",
+    # "holder",
+    # "wrap",
     "detector",
-    "source",
-    "source_holder",
+    # "source",
+    # "source_holder",
 }
 
 
@@ -115,11 +115,16 @@ def construct(
     world_lv = geant4.LogicalVolume(world, world_material, "world_lv", reg)
     reg.setWorld(world_lv)
 
+    # extract the metadata on the cryostat
+    cryostat_meta = dim.get_cryostat_metadata(
+        hpge_meta.type, hpge_meta.production.order, hpge_meta.production.slice
+    )
+
     if "vacuum_cavity" in assemblies:
-        cavity_lv = create_vacuum_cavity(reg)
+        cavity_lv = create_vacuum_cavity(cryostat_meta, reg)
         geant4.PhysicalVolume(
             [0, 0, 0],
-            [0, 0, dim.cryostat["position_cavity_from_top"], "mm"],
+            [0, 0, cryostat_meta.position_cavity_from_top, "mm"],
             cavity_lv,
             "cavity_pv",
             world_lv,

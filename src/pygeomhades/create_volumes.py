@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+from dbetto import AttrsDict
 from pyg4ometry import geant4
 from pygeomhpges import make_hpge
 
@@ -10,12 +11,37 @@ from pygeomhades import dimensions as dim
 from pygeomhades.utils import amend_gdml
 
 
-def create_vacuum_cavity(reg: geant4.Registry) -> geant4.LogicalVolume:
-    vacuum_cavity_radius = (dim.cryostat["width"] - 2 * dim.cryostat["thickness"]) / 2
+def create_vacuum_cavity(cryostat_metadata: AttrsDict, registry: geant4.Registry) -> geant4.LogicalVolume:
+    """Construct the vacuum cavity.
+
+    Parameters
+    ----------
+    cryostat
+        The dimensions of the various parts of the cryostat, should have
+        the following format
+
+        .. code-block:: yaml
+
+            cryostat:
+                width: 200
+                thickness: 2
+                height: 200
+                position_cavity_from_top: 10
+                position_cavity_from_bottom: 20,
+                position_from_bottom: 100
+
+    registry
+        The registry to add the geometry to.
+
+    Returns
+    -------
+    The logical volume for the cavity.
+    """
+    vacuum_cavity_radius = (cryostat_metadata["width"] - 2 * cryostat_metadata["thickness"]) / 2
     vacuum_cavity_z = (
-        dim.cryostat["height"]
-        - dim.cryostat["position_cavity_from_top"]
-        - dim.cryostat["position_cavity_from_bottom"]
+        cryostat_metadata["height"]
+        - cryostat_metadata["position_cavity_from_top"]
+        - cryostat_metadata["position_cavity_from_bottom"]
     )
     cavity_material = geant4.MaterialPredefined("G4_Galactic")
     vacuum_cavity = geant4.solid.GenericPolycone(
@@ -26,13 +52,15 @@ def create_vacuum_cavity(reg: geant4.Registry) -> geant4.LogicalVolume:
         pZ=[0.0, 0.0, vacuum_cavity_z, vacuum_cavity_z],
         lunit="mm",
         aunit="rad",
-        registry=reg,
+        registry=registry,
     )
-    return geant4.LogicalVolume(vacuum_cavity, cavity_material, "cavity_lv", reg)
+    return geant4.LogicalVolume(vacuum_cavity, cavity_material, "cavity_lv", registry)
 
 
-def create_detector(reg: geant4.Registry, ged_meta_dict) -> geant4.LogicalVolume:
-    return make_hpge(ged_meta_dict, name="hpge_lv", registry=reg)
+def create_detector(reg: geant4.Registry, ged_meta_dict: AttrsDict) -> geant4.LogicalVolume:
+    """Construct the detector logical volume"""
+
+    return make_hpge(ged_meta_dict, name=ged_meta_dict.name, registry=reg)
 
 
 def create_wrap(detector_meta: dict, from_gdml: bool = False) -> geant4.LogicalVolume:

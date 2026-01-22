@@ -25,4 +25,5 @@ class _DiodeProxy:
         m = copy.copy(det)
         m.name = det_name
         m.production.order = 0
+        m.production.slice = "A"
         return m

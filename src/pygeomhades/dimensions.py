@@ -2,6 +2,52 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
+from dbetto import AttrsDict
+
+
+def get_cryostat_metadata(det_type: str, order: int, xtal_slice: str) -> AttrsDict:
+    """Extract the metadata corresponding the the cryostat
+
+    In future this will be moved into external metadata.
+
+    Parameters
+    ----------
+    det_type
+        The detector type (should be icpc or bege).
+    order
+        The order number.
+    xtal_slice
+        The slice of the crystal (typically A or B).
+    """
+    cryostat = {
+        "width": 101.6,
+        "height": 122.2,
+        "thickness": 1.5,
+        "position_cavity_from_top": 1.5,
+        "position_cavity_from_bottom": 0.8,
+        "position_from_bottom": 250.0,
+    }
+    xl_orders = [3, 8, 9, 10]
+
+    if det_type == "bege":
+        cryostat["height"] = 122.2
+        cryostat["width"] = 101.6
+
+    elif (det_type == "icpc") and (order in xl_orders):
+        cryostat["width"] = 114.3
+    elif det_type == "icpc":
+        cryostat["width"] = 101.6
+    else:
+        msg = "Only detector type icpc or bege are supported."
+        raise ValueError(msg)
+
+    # override batch 9
+    if order == 9 and xtal_slice == "B":
+        cryostat["width"] = 107.95
+
+    return AttrsDict(cryostat)
+
+
 source_holder = {
     "lat": {"height": 0.0, "cavity_height": 0.0, "cavity_width": 0.0},
     "am": {

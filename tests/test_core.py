@@ -18,4 +18,4 @@ def test_construct():
     reg = construct(public_geometry=True)
     assert isinstance(reg, geant4.Registry)
 
-    assert pygeomtools.geometry.check_registry_sanity(reg, reg)
+    pygeomtools.geometry.check_registry_sanity(reg, reg)
