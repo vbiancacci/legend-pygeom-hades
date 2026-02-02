@@ -38,9 +38,17 @@ In the simplest case, you can create a usable geometry file with:
 $ legend-pygeom-hades hades.gdml
 ```
 
+## Extra metadata
+
+Some additional metadata is needed to describe the vaccuum cryostat test stand
+geometry. This is described in {doc}`metadata`.
+
+## Next steps
+
 ```{toctree}
 :maxdepth: 1
 :caption: Development
 
+Extra metadata format <metadata>
 Package API reference <api/modules>
 ```
