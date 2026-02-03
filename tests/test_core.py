@@ -18,7 +18,9 @@ def test_import():
 def test_construct():
     # test for a bege
     reg = construct(
-        config={"hpge_name": "B00000B", "lead_castle_idx": 1, "measurement": "am_HS1_top_dlt"},
+        "B00000B",
+        "am_HS1_top_dlt",
+        config={"lead_castle_idx": 1},
         public_geometry=True,
     )
     assert isinstance(reg, geant4.Registry)
@@ -26,7 +28,9 @@ def test_construct():
 
     # test for table 2
     reg = construct(
-        config={"hpge_name": "B00000B", "lead_castle_idx": 2, "measurement": "am_HS1_top_dlt"},
+        "B00000B",
+        "am_HS1_top_dlt",
+        config={"lead_castle_idx": 2},
         public_geometry=True,
     )
     assert isinstance(reg, geant4.Registry)
@@ -35,7 +39,9 @@ def test_construct():
     with pytest.raises(NotImplementedError):
         # test for source assembly (not yet verified)
         _ = construct(
-            config={"hpge_name": "B00000B", "lead_castle_idx": 1, "measurement": "am_HS1_top_dlt"},
+            "B00000B",
+            "am_HS1_top_dlt",
+            config={"lead_castle_idx": 1},
             assemblies=["hpge", "lead_castle", "source"],
             public_geometry=True,
             construct_unverified=False,

@@ -5,8 +5,6 @@ It is necessary to provide a configuration YAML file.
 This should have a format similar to:
 
 ```yaml
-hpge_name: V07302A
-measurement: am_HS1_top_dlt
 source_position:
   phi_in_deg: 0.0
   r_in_mm: 86.0
@@ -14,8 +12,7 @@ source_position:
 lead_castle_idx: 1
 ```
 
-It describes the detector to simulate, the measurement, source positions and
-which lead castle was used.
+It describes the which source positions and which lead castle was used.
 
 :::{note}
 

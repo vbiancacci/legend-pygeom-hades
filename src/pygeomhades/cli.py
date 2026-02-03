@@ -25,10 +25,16 @@ def dump_gdml_cli(argv: list[str] | None = None) -> None:
     if isinstance(args.visualize, str):
         vis_scene = utils.load_dict(args.visualize)
 
+    if args.clip_geometry:
+        vis_scene["clipper"] = [{"origin": [0, 0, 0], "normal": [1, 0, 0], "close_cuts": False}]
+
     if vis_scene.get("fine_mesh", False) or args.check_overlaps:
         meshconfig.setGlobalMeshSliceAndStack(100)
 
     registry = core.construct(
+        args.hpge_name,
+        args.measurement,
+        assemblies=args.assemblies,
         config=config,
         public_geometry=args.public_geom,
     )
@@ -86,6 +92,11 @@ def _parse_cli_args(argv: list[str] | None = None) -> tuple[argparse.Namespace, 
         help="""Open a VTK visualization of the generated geometry (with optional scene file)""",
     )
     parser.add_argument(
+        "--clip-geometry",
+        action="store_true",
+        help="""Clip the geometry for visualization purposes""",
+    )
+    parser.add_argument(
         "--check-overlaps",
         action="store_true",
         help="""Check for overlaps with pyg4ometry (note: this might not be accurate)""",
@@ -110,9 +121,32 @@ def _parse_cli_args(argv: list[str] | None = None) -> tuple[argparse.Namespace, 
         help="""Create a geometry from public testdata only.""",
     )
     geom_opts.add_argument(
+        "-c",
         "--config",
         action="store",
-        help="""Select a config file to read geometry config from.""",
+        help="""Select a config file to read geometry information from. """,
+    )
+    geom_opts.add_argument(
+        "--hpge-name",
+        action="store",
+        required=True,
+        help="""Name of the detector eg "V07302A".""",
+    )
+    geom_opts.add_argument(
+        "--assemblies",
+        action="store",
+        default=["hpge", "lead_castle"],
+        help=(
+            """Select the assemblies to generate in the output.
+            (default: hpge and lead_castle)"""
+        ),
+    )
+
+    geom_opts.add_argument(
+        "--measurement",
+        action="store",
+        required=True,
+        help="""Name of the measurement eg "am_HS1_top_dlt".""",
     )
 
     parser.add_argument(
@@ -125,22 +159,11 @@ def _parse_cli_args(argv: list[str] | None = None) -> tuple[argparse.Namespace, 
     args = parser.parse_args(argv)
 
     config = {}
+
     if args.config is not None:
         config = utils.load_dict(args.config)
-
-    # also load geometry options from config file.
-    _config_or_cli_arg(args, config, "public_geom", False)
 
     if not args.visualize and args.filename == "":
         parser.error("no output file and no visualization specified")
 
     return args, config
-
-
-def _config_or_cli_arg(args: argparse.Namespace, config: dict, name: str, default) -> None:
-    """Fallback of cli args, to config file, and to default value (in this order)."""
-    val_cfg = config.get(name)
-    val_attrs = getattr(args, name, None)
-    val = val_cfg if val_attrs is None else val_attrs
-    val = default if val is None else val
-    setattr(args, name, val)
