@@ -63,33 +63,6 @@ def get_cryostat_metadata(det_type: str, order: int, xtal_slice: str) -> AttrsDi
     return AttrsDict(cryostat)
 
 
-source_holder = {
-    "lat": {"height": 0.0, "cavity_height": 0.0, "cavity_width": 0.0},
-    "am": {
-        "top_height": 0.0,
-        "top_inner_width": 0.0,
-        "top_inner_depth": 0.0,
-        "bottom_inner_width": 0.0,
-        "top_bottom_height": 0.0,
-        "top_plate_width": 0.0,
-        "top_plate_depth": 0.0,
-        "top_plate_height": 0.0,
-    },
-    "copper": {"height": 0.0, "width": 0.0, "cavity_width": 0.0, "bottom_height": 0.0, "bottom_width": 0.0},
-    "top": {
-        "top_plate_height": 0.0,
-        "top_plate_width": 0.0,
-        "top_height": 0.0,
-        "top_inner_width": 0.0,
-        "bottom_inner_width": 0.0,
-        "top_bottom_height": 0.0,
-    },
-    "inner_width": 0.0,
-    "holder_width": 0.0,
-    "outer_width": 0.0,
-}
-
-
 def get_castle_dimensions(table_num: int) -> AttrsDict:
     """Extract the lead castle dimensions for a given table.
 
@@ -247,44 +220,61 @@ def get_source_metadata(source_type: str, meas_type: str = "") -> AttrsDict:
     return AttrsDict(source)
 
 
-def get_source_holder(source_type, meas_type):
-    if source_type in ["co", "ba", "am_collimated"]:
-        source_holder["top"]["top_plate_height"] = 3.0
-        source_holder["top"]["top_plate_width"] = 30.0
-        source_holder["top"]["top_height"] = 10.0
-        source_holder["top"]["top_inner_width"] = 20.0
-        source_holder["top"]["top_bottom_height"] = 6.1
-        source_holder["top"]["bottom_inner_width"] = 102.0
+def get_source_holder_metadata(source_type: str, meas_type: str) -> AttrsDict:
+    """Get the dimensions of the source holder.
 
-        source_holder["outer_width"] = 108.0
-        source_holder["inner_width"] = 87.0
+    Parameters
+    ----------
+    source_type
+        The type of source (am_collimated, am, ba, co or th)
+    meas_type
+        The measurement (for th only) either lat or top.
+    """
+
+    if source_type in ["co", "ba", "am_collimated"]:
+        source_holder = {
+            "source": {
+                "top_plate_height": 3.0,
+                "top_plate_width": 30.0,
+                "top_height": 10.0,
+                "top_inner_width": 20.0,
+                "top_bottom_height": 6.1,
+                "bottom_inner_width": 102.0,
+            },
+            "outer_width": 108.0,
+            "inner_width": 87.0,
+        }
 
     elif source_type == "am":
-        source_holder["outer_width"] = 108.0
-        source_holder["inner_width"] = 87.0
-
-        source_holder["am"]["top_height"] = 10.0
-        source_holder["am"]["top_inner_width"] = 7.39
-        source_holder["am"]["top_inner_depth"] = 15.39
-        source_holder["am"]["bottom_inner_width"] = 102.0
-        source_holder["am"]["top_bottom_height"] = 5.6
-        source_holder["am"]["top_plate_width"] = 11.08
-        source_holder["am"]["top_plate_depth"] = 23.08
-        source_holder["am"]["top_plate_height"] = 2.0
+        source_holder = {
+            "source": {
+                "top_height": 10.0,
+                "top_inner_width": 7.39,
+                "top_inner_depth": 15.39,
+                "bottom_inner_width": 102.0,
+                "top_bottom_height": 5.6,
+                "top_plate_width": 11.08,
+                "top_plate_depth": 23.08,
+                "top_plate_height": 2.0,
+            },
+            "outer_width": 108.0,
+            "inner_width": 87.0,
+        }
 
     elif source_type == "th":
-        source_holder["copper"]["height"] = 30.0
-        source_holder["copper"]["height"] = 32.0
-        source_holder["copper"]["cavity_width"] = 3.0
-        source_holder["copper"]["bottom_height"] = 3.0
-        source_holder["copper"]["bottom_width"] = 50.0
+        source_holder = {
+            "source": {
+                "height": 30.0,
+                "cavity_width": 3.0,
+                "bottom_height": 3.0,
+                "bottom_width": 50.0,
+            },
+        }
 
         if meas_type == "lat":
-            source_holder["outer_width"] = 181.6
-            source_holder["inner_width"] = 101.6
-            source_holder["lat"]["height"] = 65.0
-            source_holder["lat"]["cavity_height"] = 60.0
-            source_holder["lat"]["cavity_width"] = 50.0
+            source_holder.outer_width = 181.6
+            source_holder.inner_width = 101.6
+            source_holder.lat = AttrsDict({"height": 65.0, "cavity_height": 60.0, "cavity_width": 50.0})
     else:
-        msg = ""
+        msg = f"Source must be co, ba, am_collimated, am or th not {source_type}"
         raise RuntimeError(msg)

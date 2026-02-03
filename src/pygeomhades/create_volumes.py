@@ -387,51 +387,55 @@ def create_source(
 
     if source_type == "am_collimated":
         replacements = {
-            "source_height": source["height"],
-            "source_width": source["width"],
-            "source_capsule_height": source["capsule"]["height"],
-            "source_capsule_width": source["capsule"]["width"],
-            "window_source": source["collimator"]["window"],
-            "collimator_height": source["collimator"]["height"],
-            "collimator_depth": source["collimator"]["depth"],
-            "collimator_width": source["collimator"]["width"],
-            "collimator_beam_height": source["collimator"]["beam_height"],
-            "collimator_beam_width": source["collimator"]["beam_width"],
+            "source_height": source.height,
+            "source_width": source.width,
+            "source_capsule_height": source.capsule.height,
+            "source_capsule_width": source.capsule.width,
+            "window_source": source.collimator.window,
+            "collimator_height": source.collimator.height,
+            "collimator_depth": source.collimator.depth,
+            "collimator_width": source.collimator.width,
+            "collimator_beam_height": source.collimator.beam_height,
+            "collimator_beam_width": source.collimator.beam_width,
         }
+
     elif source_type == "am":
         replacements = {
-            "source_height": source["height"],
-            "source_width": source["width"],
-            "source_capsule_height": source["capsule"]["height"],
-            "source_capsule_width": source["capsule"]["width"],
-            "source_capsule_depth": source["capsule"]["depth"],
+            "source_height": source.height,
+            "source_width": source.width,
+            "source_capsule_height": source.capsule.height,
+            "source_capsule_width": source.capsule.width,
+            "source_capsule_depth": source.capsule.depth,
         }
+
     elif source_type in ["ba", "co"]:
         replacements = {
-            "source_height": source["height"],
-            "source_width": source["width"],
-            "source_foil_height": source["foil"]["height"],
-            "source_Alring_height": source["al_ring"]["height"],
-            "source_Alring_width_min": source["al_ring"]["width_min"],
-            "source_Alring_width_max": source["al_ring"]["width_max"],
+            "source_height": source.height,
+            "source_width": source.width,
+            "source_foil_height": source.foil.height,
+            "source_Alring_height": source.al_ring.height,
+            "source_Alring_width_min": source.al_ring.width_min,
+            "source_Alring_width_max": source.al_ring.width_max,
         }
+
     elif source_type == "th":
         source_holder = holder_dims
 
         replacements = {
-            "source_height": source["height"],
-            "source_width": source["width"],
-            "source_capsule_height": source["capsule"]["height"],
-            "source_capsule_width": source["capsule"]["width"],
-            "source_epoxy_height": source["epoxy"]["height"],
-            "source_epoxy_width": source["epoxy"]["width"],
-            "CuSource_holder_height": source_holder["copper"]["height"],
-            "CuSource_holder_width": source_holder["copper"]["width"],
-            "CuSource_holder_cavity_width": source_holder["copper"]["cavity_width"],
-            "CuSource_holder_bottom_height": source_holder["copper"]["bottom_height"],
-            "CuSource_holder_bottom_width": source_holder["copper"]["bottom_width"],
-            "source_offset_height": source["offset_height"],
+            "source_height": source.height,
+            "source_width": source.width,
+            "source_capsule_height": source.capsule.height,
+            "source_capsule_width": source.capsule.width,
+            "source_epoxy_height": source.epoxy.height,
+            "source_epoxy_width": source.epoxy.width,
+            "CuSource_holder_height": source_holder.copper.height,
+            "CuSource_holder_width": source_holder.copper.width,
+            "CuSource_holder_cavity_width": source_holder.copper.cavity_width,
+            "CuSource_holder_bottom_height": source_holder.copper.bottom_height,
+            "CuSource_holder_bottom_width": source_holder.copper.bottom_width,
+            "source_offset_height": source.offset_height,
         }
+
     else:
         msg = f"source type of {source_type} is not defined."
         raise RuntimeError(msg)
@@ -456,10 +460,11 @@ def create_th_plate(source_dims: AttrsDict, from_gdml: bool = False) -> geant4.L
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_th_plates_dummy.gdml"
     source = source_dims
+
     replacements = {
-        "source_plates_height": source["plates"]["height"],
-        "source_plates_width": source["plates"]["width"],
-        "source_plates_cavity_width": source["plates"]["cavity_width"],
+        "source_plates_height": source.plates.height,
+        "source_plates_width": source.plates.width,
+        "source_plates_cavity_width": source.plates.cavity_width,
     }
 
     return read_gdml_with_replacements(dummy_gdml_path, replacements)
@@ -468,56 +473,82 @@ def create_th_plate(source_dims: AttrsDict, from_gdml: bool = False) -> geant4.L
 def create_source_holder(
     source_type: str, holder_dims: AttrsDict, meas_type: str = "lat", from_gdml: bool = False
 ) -> geant4.LogicalVolume:
-    """Get the source holder geometry."""
+    """Get the source holder geometry.
+
+    Parameters
+    ----------
+    source_type
+        The type of source (am_collimated, am, ba, co or th)
+    holder_dims
+        The dimensions of the source holder, should be of the format:
+
+        .. code-block:: yaml
+            source:
+                top_plate_height: 10.0
+                top_plate_width: 10.0
+                top_height: 2.0
+                top_inner_width: 2.0
+                top_bottom_height: 2.0
+                bottom_inner_width: 2.0
+            outer_width: 100.0
+            inner_width: 10.0
+
+    meas_type
+        The measurement type (for th only) either lat or top.
+    from_gdml
+        Whether to construct from a GDML file
+    """
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
         raise RuntimeError(msg)
 
     source_holder = holder_dims
+    dummy_path = resources.files("pygeomhades") / "models" / "dummy"
 
     if source_type == "th" and meas_type == "lat":
-        dummy_gdml_path = (
-            resources.files("pygeomhades") / "models" / "dummy" / "source_holder_th_lat_dummy.gdml"
-        )
+        dummy_gdml_path = dummy_path / "source_holder_th_lat_dummy.gdml"
+
         replacements = {
-            "cavity_source_holder_height": source_holder["lat"]["cavity_height"],
-            "source_holder_height": source_holder["lat"]["height"],
-            "source_holder_outer_width": source_holder["outer_width"],
-            "source_holder_inner_width": source_holder["inner_width"],
-            "cavity_source_holder_width": source_holder["holder_width"],
+            "cavity_source_holder_height": source_holder.source.cavity_height,
+            "source_holder_height": source_holder.source.height,
+            "source_holder_outer_width": source_holder.outer_width,
+            "source_holder_inner_width": source_holder.inner_width,
+            "cavity_source_holder_width": source_holder.holder_width,
         }
 
     elif source_type in ["am_collimated", "ba", "co", "th"]:
-        dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_holder_dummy.gdml"
+        dummy_gdml_path = dummy_path / "source_holder_dummy.gdml"
 
         replacements = {
-            "source_holder_top_plate_height": source_holder["top"]["top_plate_height"],
-            "source_holder_top_height": source_holder["top"]["top_height"],
-            "source_holder_topbottom_height": source_holder["top"]["top_bottom_height"],
-            "source_holder_top_plate_width": source_holder["top"]["top_plate_width"],
-            "source_holder_top_inner_width": source_holder["top"]["top_inner_width"],
-            "source_holder_inner_width": source_holder["inner_width"],
-            "source_holder_bottom_inner_width": source_holder["top"]["bottom_inner_width"],
-            "source_holder_outer_width": source_holder["outer_width"],
-            "position_source_fromcryostat_z": dim.positions_from_cryostat["source"]["z"],
+            "source_holder_top_plate_height": source_holder.source.top_plate_height,
+            "source_holder_top_height": source_holder.source.top_height,
+            "source_holder_topbottom_height": source_holder.source.top_bottom_height,
+            "source_holder_top_plate_width": source_holder.source.top_plate_width,
+            "source_holder_top_inner_width": source_holder.source.top_inner_width,
+            "source_holder_inner_width": source_holder.inner_width,
+            "source_holder_bottom_inner_width": source_holder.source.bottom_inner_width,
+            "source_holder_outer_width": source_holder.outer_width,
+            "position_source_fromcryostat_z": dim.positions_from_cryostat.source.z,
         }
+
     elif source_type == "am":
-        dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_holder_am_dummy.gdml"
+        dummy_gdml_path = dummy_path / "source_holder_am_dummy.gdml"
 
         replacements = {
-            "source_holder_top_height": source_holder["am"]["top_height"],
-            "position_source_fromcryostat_z": dim.positions_from_cryostat["source"]["z"],
-            "source_holder_top_plate_height": source_holder["am"]["top_plate_height"],
-            "source_holder_top_plate_width": source_holder["am"]["top_plate_width"],
-            "source_holder_top_plate_depth": source_holder["am"]["top_plate_depth"],
-            "source_holder_topbottom_height": source_holder["am"]["top_bottom_height"],
-            "source_holder_top_inner_width": source_holder["am"]["top_inner_width"],
-            "source_holder_top_inner_depth": source_holder["am"]["top_inner_depth"],
-            "source_holder_inner_width": source_holder["inner_width"],
-            "source_holder_bottom_inner_width": source_holder["am"]["bottom_inner_width"],
-            "source_holder_outer_width": source_holder["outer_width"],
+            "source_holder_top_height": source_holder.source.top_height,
+            "position_source_fromcryostat_z": dim.positions_from_cryostat.source.z,
+            "source_holder_top_plate_height": source_holder.source.top_plate_height,
+            "source_holder_top_plate_width": source_holder.source.top_plate_width,
+            "source_holder_top_plate_depth": source_holder.source.top_plate_depth,
+            "source_holder_topbottom_height": source_holder.source.top_bottom_height,
+            "source_holder_top_inner_width": source_holder.source.top_inner_width,
+            "source_holder_top_inner_depth": source_holder.source.top_inner_depth,
+            "source_holder_inner_width": source_holder.inner_width,
+            "source_holder_bottom_inner_width": source_holder.source.bottom_inner_width,
+            "source_holder_outer_width": source_holder.outer_width,
         }
+
     else:
         msg = f"source type {source_type} not implemented."
         raise RuntimeError(msg)
