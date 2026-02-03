@@ -30,7 +30,6 @@ from pygeomhades.utils import merge_configs
 
 log = logging.getLogger(__name__)
 
-DEFAULT_DIMENSIONS = TextDB(resources.files("pygeomhades") / "configs" / "holder_wrap")
 
 DEFAULT_ASSEMBLIES = {
     "vacuum_cavity",
@@ -68,7 +67,7 @@ def _place_pv(
 
 def construct(
     assemblies: list[str] | set[str] = DEFAULT_ASSEMBLIES,
-    extra_meta: TextDB | Path | str = DEFAULT_DIMENSIONS,
+    extra_meta: TextDB | Path | str | None = None,
     config: str | Mapping | None = None,
     public_geometry: bool = False,
 ) -> geant4.Registry:
@@ -89,7 +88,8 @@ def construct(
         - source_holder
 
     extra_meta
-        Extra metadata needed to construct the geometry (or a path to it).
+        Extra metadata needed to construct the geometry (or a path to it). If
+        `None` then this is taken as `pygeomhades/configs/holder_wrap`.
     config
       configuration dictionary (or file containing it) defining relevant
       parameters of the geometry.
@@ -109,7 +109,9 @@ def construct(
       legend-metadata.
     """
 
-    if not isinstance(extra_meta, TextDB):
+    if extra_meta is None:
+        extra_meta = TextDB(resources.files("pygeomhades") / "configs" / "holder_wrap")
+    elif not isinstance(extra_meta, TextDB):
         extra_meta = TextDB(extra_meta)
 
     if isinstance(config, str):
