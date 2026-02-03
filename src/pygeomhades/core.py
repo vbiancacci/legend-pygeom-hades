@@ -31,7 +31,7 @@ from pygeomhades.utils import merge_configs
 log = logging.getLogger(__name__)
 
 
-DEFAULT_ASSEMBLIES = {"hpge", "lead_castle", "source"}
+DEFAULT_ASSEMBLIES = {"hpge", "lead_castle"}
 
 
 def _place_pv(

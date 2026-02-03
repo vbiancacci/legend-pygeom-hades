@@ -95,12 +95,12 @@ def create_wrap(wrap_metadata: AttrsDict, from_gdml: bool = False) -> geant4.Log
         wrap_lv = read_gdml_with_replacements(dummy_gdml_path, replacements)
     else:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     return wrap_lv
 
 
-def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False) -> geant4.LogicalVolume:
+def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = True) -> geant4.LogicalVolume:
     """Construct the holder geometry
 
     Parameters
@@ -127,6 +127,8 @@ def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False
             rings:
                 position_top_ring_in_mm: 20
                 position_bottom_ring_in_mm: 30
+                radius_in_mm: 150
+                height_in_mm: 10
             edge:
                 height_in_mm: 1000
 
@@ -139,7 +141,7 @@ def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     if det_type == "icpc":
         dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "holder_icpc_dummy.gdml"
@@ -183,12 +185,12 @@ def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False
         }
     else:
         msg = "cannot construct geometry for coax or ppc"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     return read_gdml_with_replacements(dummy_gdml_path, replacements)
 
 
-def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = False) -> geant4.Registry:
+def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = True) -> geant4.Registry:
     """Create the bottom plate.
 
     Parameters
@@ -212,7 +214,7 @@ def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = False) -> g
     """
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "bottom_plate_dummy.gdml"
 
@@ -228,7 +230,7 @@ def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = False) -> g
 
 
 def create_lead_castle(
-    table_num: int, castle_dimensions: AttrsDict, from_gdml: bool = False
+    table_num: int, castle_dimensions: AttrsDict, from_gdml: bool = True
 ) -> geant4.LogicalVolume:
     """Create the lead castle.
 
@@ -256,7 +258,7 @@ def create_lead_castle(
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     if table_num not in [1, 2]:
         msg = f"Table number must be 1 or 2 not {table_num}"
@@ -364,7 +366,7 @@ def create_source(
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / f"source_{source_type}_dummy.gdml"
 
@@ -441,7 +443,7 @@ def create_th_plate(source_dims: AttrsDict, from_gdml: bool = False) -> geant4.L
     """
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_th_plates_dummy.gdml"
     source = source_dims
@@ -456,7 +458,7 @@ def create_th_plate(source_dims: AttrsDict, from_gdml: bool = False) -> geant4.L
 
 
 def create_source_holder(
-    source_type: str, holder_dims: AttrsDict, meas_type: str = "lat", from_gdml: bool = False
+    source_type: str, holder_dims: AttrsDict, meas_type: str = "lat", from_gdml: bool = True
 ) -> geant4.LogicalVolume:
     """Get the source holder geometry.
 
@@ -486,7 +488,7 @@ def create_source_holder(
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     source_holder = holder_dims
     dummy_path = resources.files("pygeomhades") / "models" / "dummy"
@@ -541,7 +543,7 @@ def create_source_holder(
     return read_gdml_with_replacements(dummy_gdml_path, replacements)
 
 
-def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = False) -> geant4.LogicalVolume:
+def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = True) -> geant4.LogicalVolume:
     """Create the cryostat logical volume.
 
     Parameters
@@ -555,7 +557,7 @@ def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = False) -> geant4
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "cryostat_dummy.gdml"
 

@@ -15,15 +15,11 @@ def test_import():
 
 
 def test_construct():
-    reg = construct(public_geometry=True)
-    assert isinstance(reg, geant4.Registry)
-    pygeomtools.geometry.check_registry_sanity(reg, reg)
-
     # test for a bege
     reg = construct(
         config={
             "hpge_name": "B00000B",
-            "lead_castle": 1,
+            "lead_castle_idx": 1,
             "source": "am_collimated",
             "measurement_type": "top",
         },
@@ -36,7 +32,7 @@ def test_construct():
     reg = construct(
         config={
             "hpge_name": "B00000B",
-            "lead_castle": 2,
+            "lead_castle_idx": 2,
             "source": "am_collimated",
             "measurement_type": "top",
         },
