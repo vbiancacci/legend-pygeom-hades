@@ -33,17 +33,7 @@ log = logging.getLogger(__name__)
 
 DEFAULT_DIMENSIONS = TextDB(resources.files("pygeomhades") / "configs" / "holder_wrap")
 
-DEFAULT_ASSEMBLIES = {
-    "vacuum_cavity",
-    #"bottom_plate",
-    #"lead_castle",
-    "cryostat",
-    "holder",
-    "wrap",
-    "detector",
-    "source",
-    #"source_holder",
-}
+DEFAULT_ASSEMBLIES = {"hpge", "source"}
 
 
 def _place_pv(
@@ -160,32 +150,34 @@ def construct(
         hpge_meta.type, hpge_meta.production.order, hpge_meta.production.slice
     )
 
-    if "vacuum_cavity" in assemblies:
+    if "hpge" in assemblies:
+
+        #create the vacuum cavity
         cavity_lv = create_vacuum_cavity(cryostat_meta, reg)
         _place_pv(cavity_lv, "cavity_pv", world_lv, reg, z_in_mm=cryostat_meta.position_cavity_from_top)
 
-    if "wrap" in assemblies:
+        #create the wrap
         wrap_lv = create_wrap(hpge_meta.hades.wrap.geometry, from_gdml=True)
 
         z_pos = hpge_meta.hades.wrap.position - cryostat_meta.position_cavity_from_top
         pv = _place_pv(wrap_lv, "wrap_pv", cavity_lv, reg, z_in_mm=z_pos)
         reg.addVolumeRecursive(pv)
 
-    if "holder" in assemblies:
+        #create the holder
         holder_lv = create_holder(hpge_meta.hades.holder.geometry, hpge_meta.type, from_gdml=True)
         z_pos = hpge_meta.hades.holder.position - cryostat_meta.position_cavity_from_top
 
         pv = _place_pv(holder_lv, "holder_pv", cavity_lv, reg, z_in_mm=z_pos)
         reg.addVolumeRecursive(pv)
 
-    if "detector" in assemblies:
+        #create the detector
         detector_lv = create_hpge(reg, hpge_meta)
 
         z_pos = hpge_meta.hades.detector.position - cryostat_meta.position_cavity_from_top
 
         pv = _place_pv(detector_lv, hpge_meta.name, cavity_lv, reg, z_in_mm=z_pos)
 
-    if "cryostat" in assemblies:
+        #create the cryostat
         cryo_lv = create_cryostat(cryostat_meta, from_gdml=True)
         pv = _place_pv(cryo_lv, "cryo_pv", world_lv, reg)
         reg.addVolumeRecursive(pv)
@@ -234,7 +226,7 @@ def construct(
         pv = _place_pv(plate_lv, "plate_pv", world_lv, reg, z_in_mm=z_pos)
         reg.addVolumeRecursive(pv)
 
-        table = 1 #config["lead_castle"]
+        table = 1 #check the single (?) measurement that wants lead castle 2
         castle_dims = dim.get_castle_dimensions(table)
         castle_lv = create_lead_castle(table, castle_dims, from_gdml=True)
 
