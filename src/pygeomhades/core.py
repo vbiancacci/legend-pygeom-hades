@@ -16,21 +16,6 @@ from pyg4ometry import geant4
 from pygeomhpges import make_hpge
 
 from pygeomhades import dimensions as dim
-from pygeomhades.create_volumes import (
-    create_bottom_plate,
-    create_cryostat,
-    create_holder,
-    create_lead_castle,
-    create_source,
-    create_source_holder,
-    create_th_plate,
-    create_vacuum_cavity,
-    create_wrap,
-)
-from pygeomhades.metadata import PublicMetadataProxy
-from pygeomhades.utils import merge_configs, parse_measurement
-
-from pygeomhades import dimensions as dim
 from pygeomhades import set_source_position as source_pos
 from pygeomhades.create_volumes import (
     create_bottom_plate,
@@ -68,7 +53,7 @@ def _place_pv(
         [0, 0, 0],
         [x_in_mm, y_in_mm, z_in_mm, "mm"],
         lv,
-        name.replace("_lv",""),
+        name.replace("_lv", ""),
         mother_lv,
         registry=reg,
     )
@@ -103,8 +88,8 @@ def _place_pv(
 
 
 def construct(
-    #hpge_name: str,
-    #measurement: str,
+    # hpge_name: str,
+    # measurement: str,
     config: Mapping,
     assemblies: list[str] | set[str] = DEFAULT_ASSEMBLIES,
     extra_meta: TextDB | Path | str | None = None,
@@ -172,7 +157,7 @@ def construct(
         log.warning("CONSTRUCTING GEOMETRY FROM PUBLIC DATA ONLY")
         lmeta = PublicMetadataProxy()
 
-    '''
+    """
     if config is None or config == {}:
         config = {
             "hpge_name": "V07302A",
@@ -183,7 +168,7 @@ def construct(
             "r_position": 57.5,
             "z_position": 3.0
         }
-    '''
+    """
     source_type = config.measurement[:6]
     position = config.measurement[7:10]
     hpge_name = config.hpge_name
@@ -223,7 +208,7 @@ def construct(
         pv = _place_pv(wrap_lv, "wrap_pv", cavity_lv, reg, z_in_mm=z_pos)
         reg.addVolumeRecursive(pv)
 
-        #create the holder
+        # create the holder
         holder_lv = create_holder(hpge_meta.hades.holder.geometry, hpge_meta.type, from_gdml=True)
         holder_lv.pygeom_color_rgba = [0.0, 0.8, 0.2, 0.3]
         z_pos = hpge_meta.hades.holder.position - cryostat_meta.position_cavity_from_top
@@ -231,7 +216,7 @@ def construct(
         pv = _place_pv(holder_lv, "holder_pv", cavity_lv, reg, z_in_mm=z_pos)
         reg.addVolumeRecursive(pv)
 
-        #create the hpge
+        # create the hpge
         detector_lv = make_hpge(hpge_meta, name=hpge_meta.name, registry=reg)
         detector_lv.pygeom_color_rgba = [0.33, 0.33, 0.33, 1.0]
 
@@ -263,14 +248,12 @@ def construct(
         source_dims = dim.get_source_metadata(source_type)
         holder_dims = dim.get_source_holder_metadata(source_type, position)
 
-
         source_lv, vol_name = create_source(source_type, source_dims, holder_dims, from_gdml=True)
         run, source_position, _ = source_pos.set_source_position(config)
-        x_pos, y_pos, z_pos = source_position    
+        x_pos, y_pos, z_pos = source_position
         pv = _place_pv(source_lv, "source_pv", world_lv, reg, x_in_mm=x_pos, y_in_mm=y_pos, z_in_mm=z_pos)
         reg.addVolumeRecursive(pv)
         reg.logicalVolumeDict[vol_name].pygeom_color_rgba = [0.8, 0.6, 0.4, 0.2]
-        
 
         if source_type == "th_HS2":
             th_plate_lv = create_th_plate(source_dims, from_gdml=True)
@@ -278,7 +261,7 @@ def construct(
             reg.addVolumeRecursive(pv)
 
         if source_type != "am_HS1":
-            #add source holder
+            # add source holder
 
             s_holder_lv = create_source_holder(
                 source_type,
@@ -293,25 +276,24 @@ def construct(
 
             pv = _place_pv(s_holder_lv, "source_holder_pv", lab_lv, reg, z_in_mm=z_pos_holder)
             reg.addVolumeRecursive(pv)
-        
-            #insert bottom plate and lead castle only for Static measurements
-            
+
+            # insert bottom plate and lead castle only for Static measurements
+
             plate_meta = dim.get_bottom_plate_metadata()
             plate_lv = create_bottom_plate(plate_meta, from_gdml=True)
             plate_lv.pygeom_color_rgba = [0.2, 0.3, 0.5, 0.05]
-            
+
             z_pos = cryostat_meta.position_from_bottom + plate_meta.height / 2.0
             pv = _place_pv(plate_lv, "plate_pv", world_lv, reg, z_in_mm=z_pos)
             reg.addVolumeRecursive(pv)
 
-            table = 2 #check the single (?) measurement that wants lead castle 2
+            table = 2  # check the single (?) measurement that wants lead castle 2
             castle_dims = dim.get_castle_dimensions(table)
             castle_lv = create_lead_castle(table, castle_dims, from_gdml=True)
             castle_lv.pygeom_color_rgba = [0.2, 0.3, 0.5, 0.05]
-            
+
             z_pos = cryostat_meta.position_from_bottom - castle_dims.base.height / 2.0
             pv = _place_pv(castle_lv, "castle_pv", world_lv, reg, z_in_mm=z_pos)
             reg.addVolumeRecursive(pv)
-
 
     return reg

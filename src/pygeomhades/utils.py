@@ -95,5 +95,5 @@ def read_gdml_with_replacements(
 
         reader = gdml.Reader(f.name)
         reg_tmp = reader.getRegistry()
-    
+
     return reg_tmp.worldVolume
