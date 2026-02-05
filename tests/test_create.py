@@ -1,17 +1,10 @@
 from __future__ import annotations
 
-<<<<<<< HEAD
-from dbetto import AttrsDict
-from pyg4ometry import geant4
-
-from pygeomhades.create_volumes import create_vacuum_cavity
-=======
 import pytest
 from dbetto import AttrsDict
 from pyg4ometry import geant4
 
 from pygeomhades.create_volumes import create_holder, create_th_plate, create_vacuum_cavity, create_wrap
->>>>>>> upstream/main
 
 
 def test_create_cavity():
@@ -31,13 +24,6 @@ def test_create_cavity():
 
 
 def test_create_wrap():
-<<<<<<< HEAD
-    pass
-
-
-def test_create_holder():
-    pass
-=======
     wrap_metadata = AttrsDict(
         {
             "outer": {
@@ -115,4 +101,3 @@ def test_create_th_plate():
 
     with pytest.raises(NotImplementedError):
         _ = create_th_plate(source_dims, from_gdml=False)
->>>>>>> upstream/main
