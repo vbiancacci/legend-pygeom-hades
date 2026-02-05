@@ -5,9 +5,6 @@ from importlib import resources
 import numpy as np
 from dbetto import AttrsDict
 from pyg4ometry import geant4
-from pygeomhpges import make_hpge
-
-from pygeomhades import dimensions as dim
 from pygeomhades.utils import read_gdml_with_replacements
 
 
@@ -16,7 +13,7 @@ def create_vacuum_cavity(cryostat_metadata: AttrsDict, registry: geant4.Registry
 
     Parameters
     ----------
-    cryostat
+    cryostat_metadata
         The dimensions of the various parts of the cryostat, should have
         the following format
 
@@ -43,7 +40,6 @@ def create_vacuum_cavity(cryostat_metadata: AttrsDict, registry: geant4.Registry
         - cryostat_metadata["position_cavity_from_top"]
         - cryostat_metadata["position_cavity_from_bottom"]
     )
-    cavity_material = geant4.MaterialPredefined("G4_Galactic")
     vacuum_cavity = geant4.solid.GenericPolycone(
         "vacuum_cavity",
         0.0,
@@ -54,30 +50,16 @@ def create_vacuum_cavity(cryostat_metadata: AttrsDict, registry: geant4.Registry
         aunit="rad",
         registry=registry,
     )
-    return geant4.LogicalVolume(vacuum_cavity, cavity_material, "cavity_lv", registry)
-
-
-def create_hpge(reg: geant4.Registry, ged_meta_dict: AttrsDict) -> geant4.LogicalVolume:
-    """Construct the detector logical volume
-
-    Parameters
-    ----------
-    reg
-        The registry to add the detector to.
-    ged_meta_dict
-        The diodes metadata for the detector.
-
-    """
-    return make_hpge(ged_meta_dict, name=ged_meta_dict.name, registry=reg)
+    return geant4.LogicalVolume(vacuum_cavity, "G4_Galactic", "cavity_lv", registry)
 
 
 def create_wrap(wrap_metadata: AttrsDict, from_gdml: bool = False) -> geant4.LogicalVolume:
     """Create the mylar wrap.
 
-    :: warning
+    .. warning::
 
         The returned logical volume belongs to its own registry,
-        it is necessary to call {func}`reg.addVolumeRecursive` on
+        it is necessary to call :func:`reg.addVolumeRecursive` on
         the produced PhysicalVolume to get a sane registry.
 
     Parameters
@@ -110,12 +92,12 @@ def create_wrap(wrap_metadata: AttrsDict, from_gdml: bool = False) -> geant4.Log
         wrap_lv = read_gdml_with_replacements(dummy_gdml_path, replacements)
     else:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     return wrap_lv
 
 
-def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False) -> geant4.LogicalVolume:
+def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = True) -> geant4.LogicalVolume:
     """Construct the holder geometry
 
     Parameters
@@ -142,6 +124,8 @@ def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False
             rings:
                 position_top_ring_in_mm: 20
                 position_bottom_ring_in_mm: 30
+                radius_in_mm: 150
+                height_in_mm: 10
             edge:
                 height_in_mm: 1000
 
@@ -154,7 +138,7 @@ def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     if det_type == "icpc":
         dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "holder_icpc_dummy.gdml"
@@ -198,12 +182,12 @@ def create_holder(holder_meta: AttrsDict, det_type: str, from_gdml: bool = False
         }
     else:
         msg = "cannot construct geometry for coax or ppc"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     return read_gdml_with_replacements(dummy_gdml_path, replacements)
 
 
-def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = False) -> geant4.Registry:
+def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = True) -> geant4.Registry:
     """Create the bottom plate.
 
     Parameters
@@ -227,7 +211,7 @@ def create_bottom_plate(plate_metadata: AttrsDict, from_gdml: bool = False) -> g
     """
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "bottom_plate_dummy.gdml"
 
@@ -249,7 +233,7 @@ def create_lead_castle(
 
     Parameters
     ----------
-    table_number
+    table_num
         Which table the measurements were taken on (1 or 2).
     castle_dimensions
         The metadata describing the lead castle dimensions. This should
@@ -264,6 +248,8 @@ def create_lead_castle(
                 height: 100
                 depth: 100
                 width: 100
+    volume_name
+        Which volume to extract, defaults to "Lead_castle".
 
     from_gdml
         Whether to construct from a GDML file
@@ -271,10 +257,10 @@ def create_lead_castle(
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     if table_num not in [1, 2]:
-        msg = f"Table number must be 1 or 2 not {table_num}"
+        msg = f"Table number must be 1 or 2, not {table_num}"
         raise ValueError(msg)
 
     dummy_gdml_path = (
@@ -316,7 +302,7 @@ def create_lead_castle(
             "copper_plate_height": castle_dimensions.copper_plate.height,
         }
 
-    return read_gdml_with_replacements(dummy_gdml_path, replacements)#, vol_name="Lead_castle")
+    return read_gdml_with_replacements(dummy_gdml_path, replacements)
 
 
 def create_source(
@@ -371,7 +357,7 @@ def create_source(
             offset_height: 0.0
 
     holder_dims
-        Dimensions of the source holder (see {func}`get_source_holder`).
+        Dimensions of the source holder (see :func:`get_source_holder`).
 
     from_gdml
         Whether to construct from a GDML file
@@ -439,7 +425,7 @@ def create_source(
     else:
         msg = f"source type of {source_type} is not defined."
         raise RuntimeError(msg)
-    return read_gdml_with_replacements(dummy_gdml_path, replacements), vol_name #, vol_name)
+    return read_gdml_with_replacements(dummy_gdml_path, replacements), vol_name 
 
 
 def create_th_plate(source_dims: AttrsDict, from_gdml: bool = False) -> geant4.LogicalVolume:
@@ -448,79 +434,110 @@ def create_th_plate(source_dims: AttrsDict, from_gdml: bool = False) -> geant4.L
     Parameters
     ----------
     source_dims
-        See {func}`create_source` for more information.
+        See :func:`create_source` for more information.
     from_gdml
         Whether to construct from a GDML file
 
     """
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
-    dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_th_HS2_plates_dummy.gdml"
+    dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_th_plates_dummy.gdml"
     source = source_dims
+
     replacements = {
-        "source_plates_height": source["plates"]["height"],
-        "source_plates_width": source["plates"]["width"],
-        "source_plates_cavity_width": source["plates"]["cavity_width"],
+        "source_plates_height": source.plates.height,
+        "source_plates_width": source.plates.width,
+        "source_plates_cavity_width": source.plates.cavity_width,
     }
 
     return read_gdml_with_replacements(dummy_gdml_path, replacements)
 
 
 def create_source_holder(
-    source_type: str, holder_dims: AttrsDict, meas_type: str = "lat", from_gdml: bool = False
+    source_type: str, holder_dims: AttrsDict, source_z: float, meas_type: str = "lat", from_gdml: bool = True
 ) -> geant4.LogicalVolume:
-    """Get the source holder geometry."""
+    """Get the source holder geometry.
+
+    Parameters
+    ----------
+    source_type
+        The type of source (am_collimated, am, ba, co or th)
+    holder_dims
+        The dimensions of the source holder, should be of the format:
+
+        .. code-block:: yaml
+
+            source:
+                top_plate_height: 10.0
+                top_plate_width: 10.0
+                top_height: 2.0
+                top_inner_width: 2.0
+                top_bottom_height: 2.0
+                bottom_inner_width: 2.0
+            outer_width: 100.0
+            inner_width: 10.0
+
+
+    meas_type
+        The measurement type (for th only) either lat or top.
+    source_z
+        The z position of the source from the cryostat bottom.
+    from_gdml
+        Whether to construct from a GDML file
+    """
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     source_holder = holder_dims
+    dummy_path = resources.files("pygeomhades") / "models" / "dummy"
 
     if source_type == "th" and meas_type == "lat":
-        dummy_gdml_path = (
-            resources.files("pygeomhades") / "models" / "dummy" / "source_holder_th_HS2_lat_dummy.gdml"
-        )
+        dummy_gdml_path = dummy_path / "source_holder_th_lat_dummy.gdml"
+
         replacements = {
-            "cavity_source_holder_height": source_holder["lat"]["cavity_height"],
-            "source_holder_height": source_holder["lat"]["height"],
-            "source_holder_outer_width": source_holder["outer_width"],
-            "source_holder_inner_width": source_holder["inner_width"],
-            "cavity_source_holder_width": source_holder["holder_width"],
+            "cavity_source_holder_height": source_holder.source.cavity_height,
+            "source_holder_height": source_holder.source.height,
+            "source_holder_outer_width": source_holder.outer_width,
+            "source_holder_inner_width": source_holder.inner_width,
+            "cavity_source_holder_width": source_holder.holder_width,
         }
 
     elif source_type in ["am_collimated", "ba", "co", "th"]:
-        dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_holder_dummy.gdml"
+        dummy_gdml_path = dummy_path / "source_holder_dummy.gdml"
 
         replacements = {
-            "source_holder_top_plate_height": source_holder["top"]["top_plate_height"],
-            "source_holder_top_height": source_holder["top"]["top_height"],
-            "source_holder_topbottom_height": source_holder["top"]["top_bottom_height"],
-            "source_holder_top_plate_width": source_holder["top"]["top_plate_width"],
-            "source_holder_top_inner_width": source_holder["top"]["top_inner_width"],
-            "source_holder_inner_width": source_holder["inner_width"],
-            "source_holder_bottom_inner_width": source_holder["top"]["bottom_inner_width"],
-            "source_holder_outer_width": source_holder["outer_width"],
-            "position_source_fromcryostat_z": dim.positions_from_cryostat["source"]["z"],
+            "source_holder_top_plate_height": source_holder.source.top_plate_height,
+            "source_holder_top_height": source_holder.source.top_height,
+            "source_holder_topbottom_height": source_holder.source.top_bottom_height,
+            "source_holder_top_plate_width": source_holder.source.top_plate_width,
+            "source_holder_top_inner_width": source_holder.source.top_inner_width,
+            "source_holder_inner_width": source_holder.inner_width,
+            "source_holder_bottom_inner_width": source_holder.source.bottom_inner_width,
+            "source_holder_outer_width": source_holder.outer_width,
+            "position_source_fromcryostat_z": source_z,
         }
+
     elif source_type == "am":
-        dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "source_holder_am_HS6_dummy.gdml"
+        dummy_gdml_path = dummy_path / "source_holder_am_dummy.gdml"
 
         replacements = {
-            "source_holder_top_height": source_holder["am"]["top_height"],
-            "position_source_fromcryostat_z": dim.positions_from_cryostat["source"]["z"],
-            "source_holder_top_plate_height": source_holder["am"]["top_plate_height"],
-            "source_holder_top_plate_width": source_holder["am"]["top_plate_width"],
-            "source_holder_top_plate_depth": source_holder["am"]["top_plate_depth"],
-            "source_holder_topbottom_height": source_holder["am"]["top_bottom_height"],
-            "source_holder_top_inner_width": source_holder["am"]["top_inner_width"],
-            "source_holder_top_inner_depth": source_holder["am"]["top_inner_depth"],
-            "source_holder_inner_width": source_holder["inner_width"],
-            "source_holder_bottom_inner_width": source_holder["am"]["bottom_inner_width"],
-            "source_holder_outer_width": source_holder["outer_width"],
+            "source_holder_top_height": source_holder.source.top_height,
+            "position_source_fromcryostat_z": source_z,
+            "source_holder_top_plate_height": source_holder.source.top_plate_height,
+            "source_holder_top_plate_width": source_holder.source.top_plate_width,
+            "source_holder_top_plate_depth": source_holder.source.top_plate_depth,
+            "source_holder_topbottom_height": source_holder.source.top_bottom_height,
+            "source_holder_top_inner_width": source_holder.source.top_inner_width,
+            "source_holder_top_inner_depth": source_holder.source.top_inner_depth,
+            "source_holder_inner_width": source_holder.inner_width,
+            "source_holder_bottom_inner_width": source_holder.source.bottom_inner_width,
+            "source_holder_outer_width": source_holder.outer_width,
         }
+
     else:
         msg = f"source type {source_type} not implemented."
         raise RuntimeError(msg)
@@ -528,13 +545,13 @@ def create_source_holder(
     return read_gdml_with_replacements(dummy_gdml_path, replacements)
 
 
-def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = False) -> geant4.LogicalVolume:
+def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = True) -> geant4.LogicalVolume:
     """Create the cryostat logical volume.
 
     Parameters
     ----------
     cryostat_meta
-        Metadata describing the cryostat geometry (see {func}`create_wrap`) for details.
+        Metadata describing the cryostat geometry (see :func:`create_wrap`) for details.
     from_gdml
         Whether to construct from a GDML file
 
@@ -542,7 +559,7 @@ def create_cryostat(cryostat_meta: AttrsDict, from_gdml: bool = False) -> geant4
 
     if not from_gdml:
         msg = "cannot construct geometry without the gdml for now"
-        raise RuntimeError(msg)
+        raise NotImplementedError(msg)
 
     dummy_gdml_path = resources.files("pygeomhades") / "models" / "dummy" / "cryostat_dummy.gdml"
 

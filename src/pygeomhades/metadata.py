@@ -12,7 +12,6 @@ class PublicMetadataProxy:
     def __init__(self):
         dummy = TextDB(resources.files("pygeomhades") / "configs" / "dummy_geom")
 
-        self.chmap = dummy.channelmap
         self.hardware = AttrsDict({"detectors": {"germanium": {"diodes": _DiodeProxy(dummy)}}})
 
 

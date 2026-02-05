@@ -12,5 +12,12 @@
 ![License](https://img.shields.io/github/license/legend-exp/legend-pygeom-hades)
 [![Read the Docs](https://img.shields.io/readthedocs/legend-pygeom-hades?logo=readthedocs)](https://legend-pygeom-hades.readthedocs.io)
 
-Geometry of the LEGEND HPGe detector test-stand at HADES for radiation transport
-simulations.
+Geometry of the LEGEND HPGe detector test-stand at HADES for detector
+characterization.
+
+> [!WARNING] This is a work in progress and currently under heavy development.
+
+## Getting started
+
+See our [documentation page](https://legend-pygeom-hades.readthedocs.io) for
+more instructions.

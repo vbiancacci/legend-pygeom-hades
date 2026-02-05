@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+	<define>
+		<constant name="TWOPI" value="2.*pi"/>
+		<quantity name="source_holder_z" type="length" value="source_holder_height" unit="mm"/>
+		<quantity name="cavity_source_holder_z" type="length" value="cavity_source_holder_height" unit="mm"/>
+		<quantity name="source_holder_outer_radius" type="length" value="source_holder_outer_width/2" unit="mm"/>
+		<quantity name="source_holder_inner_radius" type="length" value="source_holder_inner_width/2" unit="mm"/>
+		<quantity name="cavity_source_holder_radius" type="length" value="cavity_source_holder_width/2" unit="mm"/>
+		<rotation name="rot_cavity_source_holder" x="90" unit="deg" />
+		<position name="pos_cavity_source_holder" y="source_holder_inner_radius+(source_holder_outer_radius-source_holder_inner_radius)/2"/>
+	</define>
+
+	<materials>
+		<element Z="1" formula="H" name="Hydrogen" >
+			<atom value="1" />
+		</element>
+		<element Z="6" formula="C" name="Carbon" >
+			<atom value="12.01" />
+		</element>
+		<element Z="8" formula="O" name="Oxygen" >
+			<atom value="16" />
+		</element>
+		<material name="Acrylic" >
+			<D value="1.15" unit="g/cm3" />
+			<composite n="5" ref="Carbon" />
+			<composite n="8" ref="Hydrogen" />
+			<composite n="8" ref="Oxygen" />
+		</material>
+	</materials>
+
+	<solids>
+		<tube name="cylinder_source_holder" rmin="source_holder_inner_radius" rmax="source_holder_outer_radius" z="source_holder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+		<tube name="cavity_source_holder" rmax="cavity_source_holder_radius" z="cavity_source_holder_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+		<subtraction name="source_holder" >
+			<first ref="cylinder_source_holder"/> <second ref="cavity_source_holder"/>
+			<positionref ref="pos_cavity_source_holder" />
+			<rotationref ref="rot_cavity_source_holder" />
+		</subtraction>
+	</solids>
+
+	<structure>
+		<volume name="Source_Holder">
+			<materialref ref="Acrylic"/>
+			<solidref ref="source_holder"/>
+		</volume>
+	</structure>
+
+	<setup name="Default" version="1.0">
+		<world ref="Source_Holder"/>
+	</setup>
+
+</gdml>

@@ -80,14 +80,14 @@ def check_source_position(
 
 def set_source_position(config: dict) -> tuple[str, list, list]:
 
-    hpge_name    = config["hpge_name"]
-    campaign    = config["campaign"]
-    measurement = config["measurement"]
-    run         = config["run"]
-    phi_position= config["phi_position"]
-    r_position  = config["r_position"]
-    z_position  = config["z_position"]
-    
+    hpge_name   = config.hpge_name
+    campaign    = config.campaign
+    measurement = config.measurement
+    run         = config.run
+    phi_position= config.phi_position
+    r_position  = config.r_position
+    z_position  = config.z_position
+
     MetaDataPath="/global/cfs/cdirs/m2676/data/teststands/hades/prodenv/ref/v1.0.0/inputs/hardware/config"
     MeasurementPath=f"{MetaDataPath}/{hpge_name}/{campaign}/{measurement}.yaml"
     if not os.path.isfile(MeasurementPath):
@@ -103,7 +103,7 @@ def set_source_position(config: dict) -> tuple[str, list, list]:
     node = getattr(node, campaign)
     node = getattr(node, measurement)
 
-    if run[0].isdigit(): #the user knows the run number
+    if run.isdigit(): #the user knows the run number
         run="run"+run
         try:
             node = getattr(node, run)

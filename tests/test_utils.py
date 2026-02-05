@@ -5,7 +5,11 @@ from importlib import resources
 import pyg4ometry
 
 from pygeomhades.metadata import PublicMetadataProxy
+<<<<<<< HEAD
 from pygeomhades.utils import merge_configs, read_gdml_with_replacements
+=======
+from pygeomhades.utils import merge_configs, parse_measurement, read_gdml_with_replacements
+>>>>>>> upstream/main
 
 
 def test_merge_config():
@@ -29,3 +33,27 @@ def test_read_gdml_with_replacements():
     lv = read_gdml_with_replacements(dummy_gdml_path, replacements)
 
     assert isinstance(lv, pyg4ometry.geant4.LogicalVolume)
+<<<<<<< HEAD
+=======
+
+
+def test_parse_measurement_basic():
+    out = parse_measurement("cs_HS2_bottom_foo")
+
+    assert out.source == "cs"
+    assert out.holder == "HS2"
+    assert out.position == "bottom"
+    assert out.id == "foo"
+
+    out = parse_measurement("am_HS1_top_dlt")
+
+    assert out.source == "am_collimated"
+    assert out.holder == "HS1"
+    assert out.position == "top"
+    assert out.id == "dlt"
+
+    out = parse_measurement("am_HS2_top_dlt")
+
+    assert out.source == "am"  # no renaming
+    assert out.holder == "HS2"
+>>>>>>> upstream/main

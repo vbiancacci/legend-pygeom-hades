@@ -1,0 +1,134 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+	<define>
+		<constant name="TWOPI" value="2.*pi"/>
+		<quantity name="source_z" type="length" value="source_height" unit="mm"/>
+		<quantity name="source_radius" type="length" value="source_width/2" unit="mm"/>
+		<quantity name="source_capsule_z" type="length" value="source_capsule_height" unit="mm"/>
+		<quantity name="source_capsule_radius" type="length" value="source_capsule_width/2" unit="mm"/>
+		<quantity name="source_epoxy_z" type="length" value="source_epoxy_height" unit="mm"/>
+		<quantity name="source_epoxy_radius" type="length" value="source_epoxy_width/2" unit="mm"/>
+		<quantity name="CuSource_holder_z" type="length" value="CuSource_holder_height" unit="mm"/>
+		<quantity name="CuSource_holder_radius" type="length" value="CuSource_holder_width/2" unit="mm"/>
+		<quantity name="CuSource_holder_cavity_radius" type="length" value="CuSource_holder_cavity_width/2" unit="mm"/>
+		<quantity name="CuSource_holder_bottom_z" type="length" value="CuSource_holder_bottom_height" unit="mm"/>
+		<quantity name="CuSource_holder_bottom_radius" type="length" value="CuSource_holder_bottom_width/2" unit="mm"/>
+		<quantity name="CuSource_holder_all_z" type="length" value="CuSource_holder_height+CuSource_holder_bottom_height" unit="mm"/>
+		<quantity name="source_offset_z" type="length" value="source_offset_height" unit="mm" />
+		<position name="pos_source_capsule" z="0"/>
+		<position name="pos_source_epoxy" z="(source_capsule_z-source_epoxy_z)/2"/>
+		<position name="pos_source_encapsulated" z="CuSource_holder_all_z-source_capsule_z/2-source_offset_z"/>
+		<position name="pos_CuSource_holder_cavity" z="0"/>
+	</define>
+
+	<materials>
+		<element Z="1" formula="H" name="Hydrogen" >
+			<atom value="1" />
+		</element>
+		<element Z="6" formula="C" name="Carbon" >
+			<atom value="12.01" />
+		</element>
+		<element Z="7" formula="N" name="Nitrogen" >
+			<atom value="14.01" />
+		</element>
+		<element Z="8" formula="O" name="Oxygen" >
+			<atom value="16" />
+		</element>
+		<element Z="14" formula="Si" name="Silicon" >
+			<atom value="28.09" />
+		</element>
+		<element Z="24" formula="Cr" name="Chromium" >
+			<atom value="51.9961" />
+		</element>
+		<element Z="25" formula="Mn" name="Manganese" >
+			<atom value="54.93805" />
+		</element>
+		<element Z="26" formula="Fe" name="Iron" >
+			<atom value="55.845" />
+		</element>
+		<element Z="28" formula="Ni" name="Nickel" >
+			<atom value="58.9332" />
+		</element>
+		<material name="epoxy_mod" >
+			<D value="1.129" unit="g/cm3"/>
+			<composite n="41" ref="Carbon" />
+			<composite n="49" ref="Hydrogen" />
+			<composite n="7" ref="Oxygen" />
+			<composite n="3" ref="Nitrogen" />
+		</material>
+		<material name="Ssteel" >
+			<D value="7.9" unit="g/cm3" />
+			<fraction n="0.01" ref="Silicon" />
+			<fraction n="0.2" ref="Chromium" />
+			<fraction n="0.02" ref="Manganese" />
+			<fraction n="0.67" ref="Iron" />
+			<fraction n="0.10" ref="Nickel" />
+		</material>
+		<material name="SiliconDioxide" >
+			<D value="2.32" unit="g/cm3" />
+			<composite n="1" ref="Silicon" />
+			<composite n="2" ref="Oxygen" />
+		</material>
+	</materials>
+
+	<solids>
+		<tube name="source" rmax="source_radius" z="source_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+		<tube name="source_capsule" rmax="source_capsule_radius" z="source_capsule_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+		<tube name="source_epoxy" rmax="source_epoxy_radius" z="source_epoxy_z" startphi="0" deltaphi="TWOPI" aunit="rad" />
+		<polycone name="CuSource_holder_cavity" startphi="0" deltaphi="TWOPI" aunit="rad">
+			<zplane rmin="0" rmax="CuSource_holder_cavity_radius" z="0" />
+			<zplane rmin="0" rmax="CuSource_holder_cavity_radius" z="CuSource_holder_all_z" />
+		</polycone>
+		<polycone name="CuSource_holder" startphi="0" deltaphi="TWOPI" aunit="rad">
+			<zplane rmin="0" rmax="CuSource_holder_radius" z="0" />
+			<zplane rmin="0" rmax="CuSource_holder_radius" z="CuSource_holder_z" />
+			<zplane rmin="0" rmax="CuSource_holder_bottom_radius" z="CuSource_holder_z" />
+			<zplane rmin="0" rmax="CuSource_holder_bottom_radius" z="CuSource_holder_all_z" />
+		</polycone>
+	</solids>
+
+	<structure>
+		<volume name="Source">
+			<materialref ref="SiliconDioxide"/>
+			<solidref ref="source"/>
+		</volume>
+		<volume name="Source_Epoxy">
+			<materialref ref="epoxy_mod"/>
+			<solidref ref="source_epoxy"/>
+		</volume>
+		<volume name="Source_Encapsulated">
+			<materialref ref="Ssteel"/>
+			<solidref ref="source_capsule"/>
+			<physvol>
+				<volumeref ref="Source"/>
+				<positionref ref="pos_source_capsule"/>
+			</physvol>
+			<physvol>
+				<volumeref ref="Source_Epoxy"/>
+				<positionref ref="pos_source_epoxy"/>
+			</physvol>
+		</volume>
+		<volume name="CuSource_Holder_Cavity">
+			<materialref ref="G4_AIR"/>
+			<solidref ref="CuSource_holder_cavity"/>
+			<physvol>
+				<volumeref ref="Source_Encapsulated"/>
+				<positionref ref="pos_source_encapsulated"/>
+			</physvol>
+		</volume>
+		<volume name="CuSource_Holder">
+			<materialref ref="G4_Cu"/>
+			<solidref ref="CuSource_holder"/>
+			<physvol>
+				<volumeref ref="CuSource_Holder_Cavity"/>
+				<positionref ref="pos_CuSource_holder_cavity"/>
+			</physvol>
+		</volume>
+	</structure>
+
+	<setup name="Default" version="1.0">
+		<world ref="CuSource_Holder"/>
+	</setup>
+
+</gdml>

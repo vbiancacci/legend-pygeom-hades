@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+	<define>
+		<constant name="TWOPI" value="2.*pi"/>
+		<quantity name="source_holder_top_z" type="length" value="source_holder_top_height" unit="mm"/>
+		<quantity name="source_holder_cryostat_z" type="length" value="position_source_fromcryostat_z+source_holder_top_plate_height/2" unit="mm"/>
+		<quantity name="source_holder_z" type="length" value="position_source_fromcryostat_z+source_holder_topbottom_height" unit="mm"/>
+		<quantity name="source_holder_top_inner_x" type="length" value="source_holder_top_inner_width" unit="mm"/>
+		<quantity name="source_holder_top_inner_y" type="length" value="source_holder_top_inner_depth" unit="mm"/>
+		<quantity name="source_holder_inner_radius" type="length" value="source_holder_inner_width/2" unit="mm"/>
+		<quantity name="source_holder_bottom_inner_radius" type="length" value="source_holder_bottom_inner_width/2" unit="mm"/>
+		<quantity name="source_holder_outer_radius" type="length" value="source_holder_outer_width/2" unit="mm"/>
+		<quantity name="rectangular_plate_x" type="length" value="source_holder_top_plate_width" unit="mm"/>
+		<quantity name="rectangular_plate_y" type="length" value="source_holder_top_plate_depth" unit="mm"/>
+		<quantity name="rectangular_plate_z" type="length" value="source_holder_top_plate_height" unit="mm"/>
+		<position name="pos_source_holder" z="source_holder_top_z/2"/>
+		<position name="pos_source_holder_top_inner" z="source_holder_top_z/2+rectangular_plate_z"/>
+		<position name="pos_rectangular_plate" z="rectangular_plate_z/2"/>
+		<position name="pos_center" z="0"/>
+	</define>
+
+	<materials>
+		<element Z="1" formula="H" name="Hydrogen" >
+			<atom value="1" />
+		</element>
+		<element Z="6" formula="C" name="Carbon" >
+			<atom value="12.01" />
+		</element>
+		<element Z="8" formula="O" name="Oxygen" >
+			<atom value="16" />
+		</element>
+		<material name="Acrylic" >
+			<D value="1.15" unit="g/cm3" />
+			<composite n="5" ref="Carbon" />
+			<composite n="8" ref="Hydrogen" />
+			<composite n="8" ref="Oxygen" />
+		</material>
+	</materials>
+
+	<solids>
+		<polycone name="source_holder_cylinder" startphi="0" deltaphi="TWOPI" aunit="rad">
+			<zplane rmin="0" rmax="source_holder_outer_radius" z="0"/>
+			<zplane rmin="0" rmax="source_holder_outer_radius" z="source_holder_top_z"/>
+			<zplane rmin="source_holder_inner_radius" rmax="source_holder_outer_radius" z="source_holder_top_z"/>
+			<zplane rmin="source_holder_inner_radius" rmax="source_holder_outer_radius" z="source_holder_cryostat_z"/>
+			<zplane rmin="source_holder_bottom_inner_radius" rmax="source_holder_outer_radius" z="source_holder_cryostat_z"/>
+			<zplane rmin="source_holder_bottom_inner_radius" rmax="source_holder_outer_radius" z="source_holder_z"/>
+		</polycone>
+		<box name="rectangular_plate" x="rectangular_plate_x" y="rectangular_plate_y" z="rectangular_plate_z"/>
+		<box name="source_holder_top_inner" x="source_holder_top_inner_x" y="source_holder_top_inner_y" z="source_holder_top_z" />
+		<subtraction name="source_holder_endcap" >
+			<first ref="source_holder_cylinder"/> <second ref="rectangular_plate"/>
+			<positionref ref="pos_rectangular_plate" />
+		</subtraction>
+		<subtraction name="source_holder_sub" >
+				<first ref="source_holder_endcap"/> <second ref="source_holder_top_inner"/>
+				<positionref ref="pos_source_holder_top_inner" />
+		</subtraction>
+	</solids>
+
+	<structure>
+		<volume name="Source_Holder">
+			<materialref ref="Acrylic"/>
+			<solidref ref="source_holder_sub"/>
+		</volume>
+	</structure>
+
+	<setup name="Default" version="1.0">
+		<world ref="Source_Holder"/>
+	</setup>
+
+</gdml>

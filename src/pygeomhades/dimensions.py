@@ -21,7 +21,7 @@ def get_bottom_plate_metadata() -> AttrsDict:
 
 
 def get_cryostat_metadata(det_type: str, order: int, xtal_slice: str) -> AttrsDict:
-    """Extract the metadata corresponding the the cryostat
+    """Extract the metadata corresponding to the cryostat
 
     In future this will be moved into external metadata.
 
@@ -47,11 +47,12 @@ def get_cryostat_metadata(det_type: str, order: int, xtal_slice: str) -> AttrsDi
     if det_type == "bege":
         cryostat["height"] = 122.2
         cryostat["width"] = 101.6
-
     elif (det_type == "icpc") and (order in xl_orders):
         cryostat["width"] = 114.3
+        cryostat["height"] = 171.0
     elif det_type == "icpc":
         cryostat["width"] = 101.6
+        cryostat["height"] = 171.0
     else:
         msg = "Only detector type icpc or bege are supported."
         raise ValueError(msg)
@@ -61,33 +62,6 @@ def get_cryostat_metadata(det_type: str, order: int, xtal_slice: str) -> AttrsDi
         cryostat["width"] = 107.95
 
     return AttrsDict(cryostat)
-
-
-source_holder = {
-    "lat": {"height": 0.0, "cavity_height": 0.0, "cavity_width": 0.0},
-    "am_HS6": {
-        "top_height": 0.0,
-        "top_inner_width": 0.0,
-        "top_inner_depth": 0.0,
-        "bottom_inner_width": 0.0,
-        "top_bottom_height": 0.0,
-        "top_plate_width": 0.0,
-        "top_plate_depth": 0.0,
-        "top_plate_height": 0.0,
-    },
-    "copper": {"height": 0.0, "width": 0.0, "cavity_width": 0.0, "bottom_height": 0.0, "bottom_width": 0.0},
-    "top": {
-        "top_plate_height": 0.0,
-        "top_plate_width": 0.0,
-        "top_height": 0.0,
-        "top_inner_width": 0.0,
-        "bottom_inner_width": 0.0,
-        "top_bottom_height": 0.0,
-    },
-    "inner_width": 0.0,
-    "holder_width": 0.0,
-    "outer_width": 0.0,
-}
 
 
 def get_castle_dimensions(table_num: int) -> AttrsDict:
@@ -166,7 +140,7 @@ def get_source_metadata(source_type: str, meas_type: str = "") -> AttrsDict:
     source_type
         The type of source (am_HS1, am_HS6, ba_HS4, co_HS5 or th_HS2)
     meas_type
-        The measurement (for th_HS2 only) either lat or top.
+        The measurement (for th only) either lat or top.
     """
     if source_type == "am_HS1":
         source = {
@@ -214,7 +188,7 @@ def get_source_metadata(source_type: str, meas_type: str = "") -> AttrsDict:
             "al_ring": {"height": 3.0, "width_max": 30, "width_min": 26},
         }
 
-    elif source_type == "th":
+    elif source_type == "th_HS2":
         source = {
             "height": 1.0,
             "width": 1.0,
@@ -241,50 +215,69 @@ def get_source_metadata(source_type: str, meas_type: str = "") -> AttrsDict:
             msg = "can only have top or lat measurements"
             raise RuntimeError(msg)
     else:
-        msg = f"source type can only be am_HS1,  am_HS6, ba_HS4, co_HS5, am_HS6 or th_HS2 not {source_type}"
+        msg = f"source type can only be am_collimated, ba, co, am or th not {source_type}"
         raise RuntimeError(msg)
 
     return AttrsDict(source)
 
 
-def get_source_holder(source_type, meas_type):
-    if source_type in ["co_HS5", "ba_HS4", "am_HS1"]:
-        source_holder["top"]["top_plate_height"] = 3.0
-        source_holder["top"]["top_plate_width"] = 30.0
-        source_holder["top"]["top_height"] = 10.0
-        source_holder["top"]["top_inner_width"] = 20.0
-        source_holder["top"]["top_bottom_height"] = 6.1
-        source_holder["top"]["bottom_inner_width"] = 102.0
+def get_source_holder_metadata(source_type: str, meas_type: str = "lat") -> AttrsDict:
+    """Get the dimensions of the source holder.
 
-        source_holder["outer_width"] = 108.0
-        source_holder["inner_width"] = 87.0
+    Parameters
+    ----------
+    source_type
+        The type of source (am_HS1, am_HS6, ba_HS4, co_HS5 or th_HS2)
+    meas_type
+        The measurement (for th only) either lat or top.
+    """
+
+    if source_type in ["co_HS5", "ba_HS4", "am_HS1"]:
+        source_holder = {
+            "source": {
+                "top_plate_height": 3.0,
+                "top_plate_width": 30.0,
+                "top_height": 10.0,
+                "top_inner_width": 20.0,
+                "top_bottom_height": 6.1,
+                "bottom_inner_width": 102.0,
+            },
+            "outer_width": 108.0,
+            "inner_width": 87.0,
+        }
 
     elif source_type == "am_HS6":
-        source_holder["outer_width"] = 108.0
-        source_holder["inner_width"] = 87.0
-
-        source_holder["am_HS6"]["top_height"] = 10.0
-        source_holder["am_HS6"]["top_inner_width"] = 7.39
-        source_holder["am_HS6"]["top_inner_depth"] = 15.39
-        source_holder["am_HS6"]["bottom_inner_width"] = 102.0
-        source_holder["am_HS6"]["top_bottom_height"] = 5.6
-        source_holder["am_HS6"]["top_plate_width"] = 11.08
-        source_holder["am_HS6"]["top_plate_depth"] = 23.08
-        source_holder["am_HS6"]["top_plate_height"] = 2.0
+        source_holder = {
+            "source": {
+                "top_height": 10.0,
+                "top_inner_width": 7.39,
+                "top_inner_depth": 15.39,
+                "bottom_inner_width": 102.0,
+                "top_bottom_height": 5.6,
+                "top_plate_width": 11.08,
+                "top_plate_depth": 23.08,
+                "top_plate_height": 2.0,
+            },
+            "outer_width": 108.0,
+            "inner_width": 87.0,
+        }
 
     elif source_type == "th_HS2":
-        source_holder["copper"]["height"] = 30.0
-        source_holder["copper"]["height"] = 32.0
-        source_holder["copper"]["cavity_width"] = 3.0
-        source_holder["copper"]["bottom_height"] = 3.0
-        source_holder["copper"]["bottom_width"] = 50.0
+        source_holder = {
+            "source": {
+                "height": 30.0,
+                "cavity_width": 3.0,
+                "bottom_height": 3.0,
+                "bottom_width": 50.0,
+            },
+        }
 
         if meas_type == "lat":
             source_holder["outer_width"] = 181.6
             source_holder["inner_width"] = 101.6
-            source_holder["lat"]["height"] = 65.0
-            source_holder["lat"]["cavity_height"] = 60.0
-            source_holder["lat"]["cavity_width"] = 50.0
+            source_holder["lat"] = {"height": 65.0, "cavity_height": 60.0, "cavity_width": 50.0}
     else:
-        msg = ""
+        msg = f"Source must be co, ba, am_collimated, am or th not {source_type}"
         raise RuntimeError(msg)
+
+    return AttrsDict(source_holder)
